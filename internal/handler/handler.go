@@ -1,7 +1,7 @@
 package handler
 
 import (
-	auth "github.com/alxrusinov/diploma/internal/Auth"
+	"github.com/alxrusinov/diploma/internal/auth"
 	"github.com/alxrusinov/diploma/internal/client"
 	"github.com/alxrusinov/diploma/internal/store"
 )

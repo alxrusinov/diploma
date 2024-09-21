@@ -8,7 +8,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	auth "github.com/alxrusinov/diploma/internal/Auth"
+	"github.com/alxrusinov/diploma/internal/auth"
 	"github.com/alxrusinov/diploma/internal/model"
 	"github.com/alxrusinov/diploma/internal/store"
 	"github.com/gin-gonic/gin"

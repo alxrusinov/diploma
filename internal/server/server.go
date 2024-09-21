@@ -30,7 +30,7 @@ func CreateServer(handler *handler.Handler, runAddress string) *Server {
 
 	userAPI := api.Group("/user")
 
-	userAPI.Use(server.handler.Middleware.CheckAuth())
+	userAPI.Use(server.handler.Middleware.CheckAuth(server.handler.AuthClient))
 
 	userAPI.POST("/orders", server.handler.SetOrders)
 

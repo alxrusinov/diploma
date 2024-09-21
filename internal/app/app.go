@@ -1,7 +1,7 @@
 package app
 
 import (
-	auth "github.com/alxrusinov/diploma/internal/Auth"
+	"github.com/alxrusinov/diploma/internal/auth"
 	"github.com/alxrusinov/diploma/internal/config"
 	"github.com/alxrusinov/diploma/internal/handler"
 	"github.com/alxrusinov/diploma/internal/server"

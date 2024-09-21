@@ -8,6 +8,6 @@ type Token struct {
 	Exp      int64  `json:"exp"`
 }
 
-func (token *Token) isExpired() bool {
+func (token *Token) IsExpired() bool {
 	return token.Exp < time.Now().Unix()
 }
