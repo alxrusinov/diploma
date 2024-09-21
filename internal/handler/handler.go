@@ -16,6 +16,10 @@ type Handler struct {
 	client     *client.Client
 }
 
+const (
+	TokenCookie = "token"
+)
+
 func CreateHandler(currentStore store.Store, responseAddr string) *Handler {
 	handler := &Handler{
 		store: currentStore,
