@@ -2,9 +2,7 @@ package handler
 
 import (
 	"net/http"
-	"time"
 
-	"github.com/alxrusinov/diploma/internal/auth"
 	"github.com/alxrusinov/diploma/internal/model"
 	"github.com/gin-gonic/gin"
 )
@@ -43,20 +41,14 @@ func (handler *Handler) Register(ctx *gin.Context) {
 		return
 	}
 
-	tokeString, err := auth.GetToken(NewUser)
+	token, err := handler.AuthClient.GetToken(NewUser)
 
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
-	newToken := &model.Token{
-		UserName: NewUser.Login,
-		Exp:      time.Now().Add(time.Hour * 600).Unix(),
-		Token:    tokeString,
-	}
-
-	token, err := handler.store.UpdateUser(newToken)
+	_, err = handler.store.UpdateUser(token)
 
 	ctx.SetCookie(TokenCookie, token.Token, int(token.Exp), "/", "localhost", false, true)
 	ctx.Status(http.StatusOK)

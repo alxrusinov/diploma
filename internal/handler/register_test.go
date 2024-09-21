@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	auth "github.com/alxrusinov/diploma/internal/Auth"
 	"github.com/alxrusinov/diploma/internal/model"
 	"github.com/alxrusinov/diploma/internal/store"
 	"github.com/gin-gonic/gin"
@@ -58,7 +59,9 @@ func TestRegister(t *testing.T) {
 		Token:    "123.456.789",
 	}, nil)
 
-	testHandler := CreateHandler(testStore, "http://localhost:8080")
+	authClient := auth.CreateAuth()
+
+	testHandler := CreateHandler(testStore, "http://localhost:8080", authClient)
 
 	router := gin.New()
 
