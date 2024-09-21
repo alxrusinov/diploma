@@ -9,6 +9,7 @@ type Store interface {
 	CheckUserExists(user *model.User) (bool, error)
 	CreateUser(user *model.User) error
 	UpdateUser(token *model.Token) (*model.Token, error)
+	CheckIsValidUser(user *model.User) (bool, error)
 }
 
 func CreateStore(config *config.Config) Store {

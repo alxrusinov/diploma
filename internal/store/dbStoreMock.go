@@ -26,3 +26,9 @@ func (m *DBStoreMock) UpdateUser(token *model.Token) (*model.Token, error) {
 
 	return args.Get(0).(*model.Token), args.Error(1)
 }
+
+func (m *DBStoreMock) CheckIsValidUser(user *model.User) (bool, error) {
+	args := m.Called(user)
+
+	return args.Bool(0), args.Error(1)
+}

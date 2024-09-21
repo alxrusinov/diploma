@@ -23,6 +23,10 @@ func (store *DBStore) UpdateUser(toke *model.Token) (*model.Token, error) {
 	return &model.Token{}, nil
 }
 
+func (store *DBStore) CheckIsValidUser(user *model.User) (bool, error) {
+	return true, nil
+}
+
 func CreateDBStore(databaseURI string) Store {
 	store := &DBStore{}
 
