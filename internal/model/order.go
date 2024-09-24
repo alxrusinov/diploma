@@ -5,3 +5,7 @@ type Order struct {
 	Process Process `json:"status"`
 	Accrual int     `json:"accrual"`
 }
+
+func (order *Order) ValidateNumber() bool {
+	return true
+}

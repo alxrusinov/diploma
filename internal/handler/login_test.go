@@ -7,9 +7,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/alxrusinov/diploma/internal/app/useCase"
 	"github.com/alxrusinov/diploma/internal/auth"
 	"github.com/alxrusinov/diploma/internal/model"
-	"github.com/alxrusinov/diploma/internal/store"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -38,14 +38,14 @@ func TestLogin(t *testing.T) {
 		Password: "1234",
 	}
 
-	testStore := new(store.DBStoreMock)
+	testUseCase := new(useCase.UseCaseMock)
 
-	testStore.On("CheckUserExists", mock.Anything).Return(true, nil)
+	testUseCase.On("CheckUserExists", mock.Anything).Return(true, nil)
 
-	testStore.On("CheckIsValidUser", notValidUser).Return(false, nil)
-	testStore.On("CheckIsValidUser", trueUser).Return(true, nil)
+	testUseCase.On("CheckIsValidUser", notValidUser).Return(false, nil)
+	testUseCase.On("CheckIsValidUser", trueUser).Return(true, nil)
 
-	testStore.On("UpdateUser", mock.Anything).Return(&model.Token{
+	testUseCase.On("UpdateUser", mock.Anything).Return(&model.Token{
 		UserName: trueUser.Login,
 		Exp:      60 * 60 * 24,
 		Token:    "123.456.789",
@@ -53,7 +53,7 @@ func TestLogin(t *testing.T) {
 
 	authClient := auth.CreateAuth()
 
-	testHandler := CreateHandler(testStore, "http://localhost:8080", authClient)
+	testHandler := CreateHandler(testUseCase, "http://localhost:8080", authClient)
 
 	router := gin.New()
 
