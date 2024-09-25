@@ -1,9 +1,9 @@
 package handler
 
 import (
-	"github.com/alxrusinov/diploma/internal/app/useCase"
-	"github.com/alxrusinov/diploma/internal/auth"
+	"github.com/alxrusinov/diploma/internal/authenticate"
 	"github.com/alxrusinov/diploma/internal/client"
+	"github.com/alxrusinov/diploma/internal/useCase"
 )
 
 type options struct {
@@ -15,14 +15,14 @@ type Handler struct {
 	options    options
 	client     *client.Client
 	Middleware Middleware
-	AuthClient *auth.Auth
+	AuthClient *authenticate.Auth
 }
 
 const (
 	TokenCookie = "token"
 )
 
-func CreateHandler(useCase useCase.UseCase, responseAddr string, authClient *auth.Auth) *Handler {
+func CreateHandler(useCase useCase.UseCase, responseAddr string, authClient *authenticate.Auth) *Handler {
 	handler := &Handler{
 		useCase: useCase,
 		options: options{

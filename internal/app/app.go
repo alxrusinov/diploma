@@ -1,12 +1,12 @@
 package app
 
 import (
-	"github.com/alxrusinov/diploma/internal/app/useCase"
-	"github.com/alxrusinov/diploma/internal/auth"
+	"github.com/alxrusinov/diploma/internal/authenticate"
 	"github.com/alxrusinov/diploma/internal/config"
 	"github.com/alxrusinov/diploma/internal/handler"
 	"github.com/alxrusinov/diploma/internal/server"
 	"github.com/alxrusinov/diploma/internal/store"
+	"github.com/alxrusinov/diploma/internal/useCase"
 )
 
 type App struct {
@@ -21,7 +21,7 @@ func (app *App) Run() {
 	app.Config.Parse()
 
 	store := store.CreateDBStore(app.Config.DatabaseURI)
-	authClient := auth.CreateAuth()
+	authClient := authenticate.CreateAuth()
 	useCase := useCase.CreateUseCase(store)
 	router := handler.CreateHandler(useCase, app.Config.AccrualSystemAddress, authClient)
 	server := server.CreateServer(router, app.Config.RunAddress)

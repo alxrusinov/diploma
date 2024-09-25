@@ -7,9 +7,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/alxrusinov/diploma/internal/app/useCase"
-	"github.com/alxrusinov/diploma/internal/auth"
+	"github.com/alxrusinov/diploma/internal/authenticate"
 	"github.com/alxrusinov/diploma/internal/model"
+	"github.com/alxrusinov/diploma/internal/useCase"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -51,7 +51,7 @@ func TestLogin(t *testing.T) {
 		Token:    "123.456.789",
 	}, nil)
 
-	authClient := auth.CreateAuth()
+	authClient := authenticate.CreateAuth()
 
 	testHandler := CreateHandler(testUseCase, "http://localhost:8080", authClient)
 

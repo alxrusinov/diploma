@@ -10,4 +10,5 @@ type UseCase interface {
 	UpdateUser(token *model.Token) (*model.Token, error)
 	CheckIsValidUser(user *model.User) (bool, error)
 	UploadOrder(order *model.Order) (*model.Order, error)
+	GetOrders(login string) ([]model.Order, error)
 }
