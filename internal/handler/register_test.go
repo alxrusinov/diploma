@@ -8,9 +8,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/alxrusinov/diploma/internal/app/useCase"
 	"github.com/alxrusinov/diploma/internal/auth"
 	"github.com/alxrusinov/diploma/internal/model"
-	"github.com/alxrusinov/diploma/internal/store"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -44,16 +44,16 @@ func TestRegister(t *testing.T) {
 		Password: "1234",
 	}
 
-	testStore := new(store.DBStoreMock)
+	testuseCase := new(useCase.UseCaseMock)
 
-	testStore.On("CheckUserExists", existedUser).Return(true, nil)
-	testStore.On("CheckUserExists", trueUser).Return(false, nil)
-	testStore.On("CheckUserExists", notCreatedUser).Return(false, nil)
+	testuseCase.On("CheckUserExists", existedUser).Return(true, nil)
+	testuseCase.On("CheckUserExists", trueUser).Return(false, nil)
+	testuseCase.On("CheckUserExists", notCreatedUser).Return(false, nil)
 
-	testStore.On("CreateUser", notCreatedUser).Return(errors.New("user was not created"))
-	testStore.On("CreateUser", trueUser).Return(nil)
+	testuseCase.On("CreateUser", notCreatedUser).Return(errors.New("user was not created"))
+	testuseCase.On("CreateUser", trueUser).Return(nil)
 
-	testStore.On("UpdateUser", mock.Anything).Return(&model.Token{
+	testuseCase.On("UpdateUser", mock.Anything).Return(&model.Token{
 		UserName: trueUser.Login,
 		Exp:      60 * 60 * 24,
 		Token:    "123.456.789",
@@ -61,7 +61,7 @@ func TestRegister(t *testing.T) {
 
 	authClient := auth.CreateAuth()
 
-	testHandler := CreateHandler(testStore, "http://localhost:8080", authClient)
+	testHandler := CreateHandler(testuseCase, "http://localhost:8080", authClient)
 
 	router := gin.New()
 

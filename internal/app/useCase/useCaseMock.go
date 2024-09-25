@@ -33,8 +33,8 @@ func (m *UseCaseMock) CheckIsValidUser(user *model.User) (bool, error) {
 	return args.Bool(0), args.Error(1)
 }
 
-func (m *UseCaseMock) UploadOrder(order *model.Order) error {
+func (m *UseCaseMock) UploadOrder(order *model.Order) (*model.Order, error) {
 	args := m.Called(order)
 
-	return args.Error(0)
+	return args.Get(0).(*model.Order), args.Error(1)
 }

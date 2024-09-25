@@ -25,8 +25,8 @@ func (useCase *UseCaseInst) CheckIsValidUser(user *model.User) (bool, error) {
 	return true, nil
 }
 
-func (useCase *UseCaseInst) UploadOrder(order *model.Order) error {
-	return nil
+func (useCase *UseCaseInst) UploadOrder(order *model.Order) (*model.Order, error) {
+	return &model.Order{}, nil
 }
 
 func CreateUseCase(store store.Store) UseCase {

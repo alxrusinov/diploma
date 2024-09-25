@@ -9,5 +9,5 @@ type UseCase interface {
 	CreateUser(user *model.User) error
 	UpdateUser(token *model.Token) (*model.Token, error)
 	CheckIsValidUser(user *model.User) (bool, error)
-	UploadOrder(order *model.Order) error
+	UploadOrder(order *model.Order) (*model.Order, error)
 }
