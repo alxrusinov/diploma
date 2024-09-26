@@ -11,4 +11,5 @@ type UseCase interface {
 	CheckIsValidUser(user *model.User) (bool, error)
 	UploadOrder(order *model.Order) (*model.Order, error)
 	GetOrders(login string) ([]model.OrderResponse, error)
+	GetBalance(login string) (*model.Balance, error)
 }

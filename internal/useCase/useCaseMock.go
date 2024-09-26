@@ -44,3 +44,9 @@ func (m *UseCaseMock) GetOrders(login string) ([]model.OrderResponse, error) {
 
 	return args.Get(0).([]model.OrderResponse), args.Error(1)
 }
+
+func (m *UseCaseMock) GetBalance(login string) (*model.Balance, error) {
+	args := m.Called(login)
+
+	return args.Get(0).(*model.Balance), args.Error(1)
+}

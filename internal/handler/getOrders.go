@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -18,7 +17,6 @@ func (handler *Handler) GetOrders(ctx *gin.Context) {
 	token, err := handler.AuthClient.ParseToken(tokenString)
 
 	if err != nil {
-		fmt.Printf("#2 TWO - %#v\n", tokenString)
 		ctx.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}

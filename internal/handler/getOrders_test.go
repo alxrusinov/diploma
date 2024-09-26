@@ -95,8 +95,6 @@ func TestGetOrders(t *testing.T) {
 
 		res := w.Result()
 
-		// fmt.Printf("token - %#v, cookies - %#v", token, request.Cookies()[0])
-
 		assert.Equal(t, tt.code, res.StatusCode)
 
 	}

@@ -34,6 +34,10 @@ func (useCase *UseCaseInst) GetOrders(login string) ([]model.OrderResponse, erro
 	return res, nil
 }
 
+func (useCase *UseCaseInst) GetBalance(login string) (*model.Balance, error) {
+	return new(model.Balance), nil
+}
+
 func CreateUseCase(store store.Store) UseCase {
 	return &UseCaseInst{store}
 }
