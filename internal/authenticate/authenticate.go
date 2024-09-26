@@ -13,6 +13,12 @@ type Auth struct {
 	Sault []byte
 }
 
+type CustomClaims struct {
+	Exp int64  `json:"exp"`
+	Sub string `json:"sub"`
+	jwt.StandardClaims
+}
+
 func (auth *Auth) GetToken(user *model.User) (*model.Token, error) {
 	exp := time.Now().Add(time.Hour * 600).Unix()
 
@@ -38,7 +44,9 @@ func (auth *Auth) GetToken(user *model.User) (*model.Token, error) {
 }
 
 func (auth *Auth) ParseToken(tokenString string) (*model.Token, error) {
-	parsed, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+	var claims *CustomClaims
+
+	parsed, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
@@ -49,29 +57,17 @@ func (auth *Auth) ParseToken(tokenString string) (*model.Token, error) {
 		return nil, err
 	}
 
-	var claims jwt.MapClaims
-
-	if val, ok := parsed.Claims.(jwt.MapClaims); ok {
+	if val, ok := parsed.Claims.(*CustomClaims); ok {
 		claims = val
 	} else {
 		return nil, errors.New("claims parsing error")
 	}
 
-	token := new(model.Token)
-
-	if userName, ok := claims["sub"].(string); ok {
-		token.UserName = userName
-	} else {
-		return nil, errors.New("claims parsing error")
+	token := &model.Token{
+		UserName: claims.Sub,
+		Exp:      claims.Exp,
+		Token:    tokenString,
 	}
-
-	if exp, ok := claims["exp"].(int64); ok {
-		token.Exp = exp
-	} else {
-		return nil, errors.New("claims parsing error")
-	}
-
-	token.Token = tokenString
 
 	return token, nil
 }
