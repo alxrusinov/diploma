@@ -29,8 +29,8 @@ func (useCase *UseCaseInst) UploadOrder(order *model.Order) (*model.Order, error
 	return &model.Order{}, nil
 }
 
-func (useCase *UseCaseInst) GetOrders(login string) ([]model.Order, error) {
-	var res []model.Order
+func (useCase *UseCaseInst) GetOrders(login string) ([]model.OrderResponse, error) {
+	var res []model.OrderResponse
 	return res, nil
 }
 

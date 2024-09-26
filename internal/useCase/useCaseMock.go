@@ -39,8 +39,8 @@ func (m *UseCaseMock) UploadOrder(order *model.Order) (*model.Order, error) {
 	return args.Get(0).(*model.Order), args.Error(1)
 }
 
-func (m *UseCaseMock) GetOrders(login string) ([]model.Order, error) {
+func (m *UseCaseMock) GetOrders(login string) ([]model.OrderResponse, error) {
 	args := m.Called(login)
 
-	return args.Get(0).([]model.Order), args.Error(1)
+	return args.Get(0).([]model.OrderResponse), args.Error(1)
 }
