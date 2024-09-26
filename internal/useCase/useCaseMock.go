@@ -50,3 +50,9 @@ func (m *UseCaseMock) GetBalance(login string) (*model.Balance, error) {
 
 	return args.Get(0).(*model.Balance), args.Error(1)
 }
+
+func (m *UseCaseMock) GetWithdrawls(login string) ([]model.Balance, error) {
+	args := m.Called(login)
+
+	return args.Get(0).([]model.Balance), args.Error(1)
+}

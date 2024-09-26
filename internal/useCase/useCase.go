@@ -12,4 +12,5 @@ type UseCase interface {
 	UploadOrder(order *model.Order) (*model.Order, error)
 	GetOrders(login string) ([]model.OrderResponse, error)
 	GetBalance(login string) (*model.Balance, error)
+	GetWithdrawls(login string) ([]model.Balance, error)
 }

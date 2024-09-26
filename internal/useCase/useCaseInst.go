@@ -38,6 +38,10 @@ func (useCase *UseCaseInst) GetBalance(login string) (*model.Balance, error) {
 	return new(model.Balance), nil
 }
 
+func (useCase *UseCaseInst) GetWithdrawls(login string) ([]model.Balance, error) {
+	return make([]model.Balance, 0), nil
+}
+
 func CreateUseCase(store store.Store) UseCase {
 	return &UseCaseInst{store}
 }
