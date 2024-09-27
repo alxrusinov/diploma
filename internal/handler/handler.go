@@ -2,7 +2,6 @@ package handler
 
 import (
 	"github.com/alxrusinov/diploma/internal/authenticate"
-	"github.com/alxrusinov/diploma/internal/client"
 	"github.com/alxrusinov/diploma/internal/useCase"
 )
 
@@ -13,7 +12,6 @@ type options struct {
 type Handler struct {
 	useCase    useCase.UseCase
 	options    options
-	client     *client.Client
 	Middleware Middleware
 	AuthClient *authenticate.Auth
 }
@@ -28,7 +26,6 @@ func CreateHandler(useCase useCase.UseCase, responseAddr string, authClient *aut
 		options: options{
 			responseAddr: responseAddr,
 		},
-		client:     client.CreateClient(),
 		Middleware: Middleware{},
 		AuthClient: authClient,
 	}
