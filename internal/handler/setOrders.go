@@ -4,7 +4,6 @@ import (
 	"errors"
 	"io"
 	"net/http"
-	"strconv"
 
 	"github.com/alxrusinov/diploma/internal/customerrors"
 	"github.com/alxrusinov/diploma/internal/model"
@@ -21,18 +20,13 @@ func (handler *Handler) SetOrders(ctx *gin.Context) {
 
 	parsedBody := string(body)
 
-	number, err := strconv.Atoi(parsedBody)
-
-	if err != nil {
-		ctx.AbortWithStatus(http.StatusBadRequest)
-		return
-	}
-
 	order := &model.Order{
-		Number: number,
+		Number: parsedBody,
 	}
 
-	if !order.ValidateNumber() {
+	isValid, err := order.ValidateNumber()
+
+	if err != nil || !isValid {
 		ctx.AbortWithStatus(http.StatusUnprocessableEntity)
 		return
 	}

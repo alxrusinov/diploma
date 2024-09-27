@@ -22,15 +22,8 @@ func (handler *Handler) SetBalanceWithDraw(ctx *gin.Context) {
 		return
 	}
 
-	orderNumber, err := withdraw.OrderToNumber()
-
-	if err != nil {
-		ctx.AbortWithStatus(http.StatusUnprocessableEntity)
-		return
-	}
-
 	sendOrder := &model.Order{
-		Number: orderNumber,
+		Number: withdraw.Order,
 	}
 
 	order, err := handler.useCase.UploadOrder(sendOrder)

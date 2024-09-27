@@ -1,11 +1,15 @@
 package model
 
+import luhn "github.com/EClaesson/go-luhn"
+
 type Order struct {
-	Number  int     `json:"order"`
+	Number  string  `json:"order"`
 	Process Process `json:"status"`
 	Accrual int     `json:"accrual"`
 }
 
-func (order *Order) ValidateNumber() bool {
-	return true
+func (order *Order) ValidateNumber() (bool, error) {
+	res, err := luhn.IsValid(order.Number)
+
+	return res, err
 }

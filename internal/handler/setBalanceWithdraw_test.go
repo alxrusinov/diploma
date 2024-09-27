@@ -39,7 +39,7 @@ func TestSetBalanceWithdraw(t *testing.T) {
 	testuseCase := new(useCase.UseCaseMock)
 
 	testuseCase.On("UploadOrder", mock.Anything).Return(&model.Order{
-		Number:  123,
+		Number:  "123",
 		Accrual: 400,
 	}, nil)
 

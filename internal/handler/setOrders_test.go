@@ -20,23 +20,23 @@ func TestSetOrders(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	validOrder := &model.Order{
-		Number: 123,
+		Number: "123",
 	}
 
 	duplicateOwnerOrder := &model.Order{
-		Number: 111,
+		Number: "111",
 	}
 
 	duplicateUserOrder := &model.Order{
-		Number: 222,
+		Number: "222",
 	}
 
 	anotherErrorOrder := &model.Order{
-		Number: 000,
+		Number: "000",
 	}
 
 	badBody := &model.Order{
-		Number: 999,
+		Number: "999",
 	}
 
 	testuseCase := new(useCase.UseCaseMock)
