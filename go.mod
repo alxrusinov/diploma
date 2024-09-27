@@ -1,6 +1,6 @@
 module github.com/alxrusinov/diploma
 
-go 1.23.1
+go 1.23.0
 
 require (
 	github.com/EClaesson/go-luhn v0.0.0-20210207103312-b1c12d658b70
