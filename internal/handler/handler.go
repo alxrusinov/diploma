@@ -20,9 +20,9 @@ const (
 	TokenCookie = "token"
 )
 
-func CreateHandler(useCase usecase.Usecase, responseAddr string, authClient *authenticate.Auth) *Handler {
+func CreateHandler(usecaseInst usecase.Usecase, responseAddr string, authClient *authenticate.Auth) *Handler {
 	handler := &Handler{
-		useCase: useCase,
+		useCase: usecaseInst,
 		options: options{
 			responseAddr: responseAddr,
 		},
