@@ -2,8 +2,6 @@ module github.com/alxrusinov/diploma
 
 go 1.22.0
 
-toolchain go1.23.1
-
 require (
 	github.com/EClaesson/go-luhn v0.0.0-20210207103312-b1c12d658b70
 	github.com/gin-gonic/gin v1.10.0
