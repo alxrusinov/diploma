@@ -4,11 +4,13 @@ import (
 	"database/sql"
 	"log"
 
+	"github.com/alxrusinov/diploma/internal/migrator"
 	"github.com/alxrusinov/diploma/internal/model"
 )
 
 type DBStore struct {
-	db *sql.DB
+	db       *sql.DB
+	migrator *migrator.Migrator
 }
 
 func (store *DBStore) FindUserByLogin(user *model.User) (bool, error) {
@@ -35,7 +37,13 @@ func (store *DBStore) GetOrders(login string) ([]model.OrderResponse, error) {
 	return make([]model.OrderResponse, 0), nil
 }
 
-func CreateDBStore(databaseURI string) Store {
+func (store *DBStore) RunMigration() error {
+	err := store.migrator.ApplyMigrations(store.db)
+
+	return err
+}
+
+func CreateDBStore(databaseURI string, migrator *migrator.Migrator) Store {
 	store := &DBStore{}
 
 	db, err := sql.Open("pgx", databaseURI)
@@ -45,6 +53,7 @@ func CreateDBStore(databaseURI string) Store {
 	}
 
 	store.db = db
+	store.migrator = migrator
 
 	return store
 

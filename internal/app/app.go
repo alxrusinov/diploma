@@ -1,9 +1,12 @@
 package app
 
 import (
+	"log"
+
 	"github.com/alxrusinov/diploma/internal/authenticate"
 	"github.com/alxrusinov/diploma/internal/config"
 	"github.com/alxrusinov/diploma/internal/handler"
+	"github.com/alxrusinov/diploma/internal/migrator"
 	"github.com/alxrusinov/diploma/internal/server"
 	"github.com/alxrusinov/diploma/internal/store"
 	"github.com/alxrusinov/diploma/internal/useCase"
@@ -20,11 +23,18 @@ func (app *App) Init() {
 func (app *App) Run() {
 	app.Config.Parse()
 
-	store := store.CreateDBStore(app.Config.DatabaseURI)
+	migratorInst := migrator.CreateMigrator()
+	store := store.CreateDBStore(app.Config.DatabaseURI, migratorInst)
 	authClient := authenticate.CreateAuth()
 	useCase := useCase.CreateUseCase(store)
 	router := handler.CreateHandler(useCase, app.Config.AccrualSystemAddress, authClient)
 	server := server.CreateServer(router, app.Config.RunAddress)
+
+	err := store.RunMigration()
+
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	server.Run()
 }

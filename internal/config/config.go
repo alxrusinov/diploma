@@ -2,13 +2,16 @@ package config
 
 import (
 	"flag"
+	"fmt"
 	"os"
+	"path/filepath"
 )
 
 const (
 	RunAddress           = "RUN_ADDRESS"
 	DatabaseURI          = "DATABASE_URI"
 	AccrualSystemAddress = "ACCRUAL_SYSTEM_ADDRESS"
+	MigrationsDir        = "migrations"
 )
 
 var Env = map[string]string{}
@@ -17,6 +20,7 @@ type Config struct {
 	RunAddress           string
 	DatabaseURI          string
 	AccrualSystemAddress string
+	MigrationsDir        string
 }
 
 func (config *Config) Init() {
@@ -49,5 +53,9 @@ func (config *Config) Parse() {
 }
 
 func CreateConfig() *Config {
-	return &Config{}
+	path, _ := filepath.Abs(MigrationsDir)
+	fmt.Printf("%#v\n", path)
+	return &Config{
+		MigrationsDir: path,
+	}
 }
