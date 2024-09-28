@@ -11,7 +11,7 @@ import (
 	"github.com/alxrusinov/diploma/internal/authenticate"
 	"github.com/alxrusinov/diploma/internal/customerrors"
 	"github.com/alxrusinov/diploma/internal/model"
-	"github.com/alxrusinov/diploma/internal/usecase"
+	"github.com/alxrusinov/diploma/internal/use"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
@@ -39,7 +39,7 @@ func TestSetOrders(t *testing.T) {
 		Number: "999",
 	}
 
-	testuseCase := new(usecase.UsecaseMock)
+	testuseCase := new(use.UsecaseMock)
 
 	testuseCase.On("UploadOrder", validOrder).Return(validOrder, nil)
 

@@ -1,4 +1,4 @@
-package usecase
+package use
 
 import (
 	"errors"
@@ -92,6 +92,6 @@ func (useCase *UsecaseInst) GetWithdrawls(login string) ([]model.Balance, error)
 	return make([]model.Balance, 0), nil
 }
 
-func CreateUseCase(store store.Store) Usecase {
+func CreateUsecase(store store.Store) Usecase {
 	return &UsecaseInst{store: store, client: new(client.Client)}
 }

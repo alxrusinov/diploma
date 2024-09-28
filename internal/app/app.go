@@ -9,7 +9,7 @@ import (
 	"github.com/alxrusinov/diploma/internal/migrator"
 	"github.com/alxrusinov/diploma/internal/server"
 	"github.com/alxrusinov/diploma/internal/store"
-	"github.com/alxrusinov/diploma/internal/usecase"
+	"github.com/alxrusinov/diploma/internal/use"
 )
 
 type App struct {
@@ -26,8 +26,8 @@ func (app *App) Run() {
 	migratorInst := migrator.CreateMigrator()
 	store := store.CreateDBStore(app.Config.DatabaseURI, migratorInst)
 	authClient := authenticate.CreateAuth()
-	useCase := usecase.CreateUseCase(store)
-	router := handler.CreateHandler(useCase, app.Config.AccrualSystemAddress, authClient)
+	uc := use.CreateUsecase(store)
+	router := handler.CreateHandler(uc, app.Config.AccrualSystemAddress, authClient)
 	server := server.CreateServer(router, app.Config.RunAddress)
 
 	err := store.RunMigration()
