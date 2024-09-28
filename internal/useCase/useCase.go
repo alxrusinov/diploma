@@ -4,7 +4,7 @@ import (
 	"github.com/alxrusinov/diploma/internal/model"
 )
 
-type UseCase interface {
+type Usecase interface {
 	CheckUserExists(user *model.User) (bool, error)
 	CreateUser(user *model.User) error
 	UpdateUser(token *model.Token) (*model.Token, error)

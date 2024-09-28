@@ -34,7 +34,7 @@ func TestGetOrders(t *testing.T) {
 
 	emptyOrderList := make([]model.OrderResponse, 0)
 
-	testuseCase := new(usecase.UseCaseMock)
+	testuseCase := new(usecase.UsecaseMock)
 
 	testuseCase.On("GetOrders", validLogin).Return(orderList, nil)
 

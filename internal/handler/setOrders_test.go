@@ -39,7 +39,7 @@ func TestSetOrders(t *testing.T) {
 		Number: "999",
 	}
 
-	testuseCase := new(usecase.UseCaseMock)
+	testuseCase := new(usecase.UsecaseMock)
 
 	testuseCase.On("UploadOrder", validOrder).Return(validOrder, nil)
 

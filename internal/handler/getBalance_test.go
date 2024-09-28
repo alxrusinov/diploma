@@ -21,7 +21,7 @@ func TestGetBalance(t *testing.T) {
 
 	errorLogin := "333"
 
-	testuseCase := new(usecase.UseCaseMock)
+	testuseCase := new(usecase.UsecaseMock)
 
 	testuseCase.On("GetBalance", validLogin).Return(&model.Balance{}, nil)
 

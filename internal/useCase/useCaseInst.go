@@ -8,17 +8,17 @@ import (
 	"github.com/alxrusinov/diploma/internal/store"
 )
 
-type UseCaseInst struct {
+type UsecaseInst struct {
 	store  store.Store
 	client *client.Client
 }
 
-func (useCase *UseCaseInst) CheckUserExists(user *model.User) (bool, error) {
+func (useCase *UsecaseInst) CheckUserExists(user *model.User) (bool, error) {
 	ok, err := useCase.store.FindUserByLogin(user)
 	return ok, err
 }
 
-func (useCase *UseCaseInst) CreateUser(user *model.User) error {
+func (useCase *UsecaseInst) CreateUser(user *model.User) error {
 	found, err := useCase.store.CreateUser(user)
 
 	if err != nil {
@@ -32,19 +32,19 @@ func (useCase *UseCaseInst) CreateUser(user *model.User) error {
 	return nil
 }
 
-func (useCase *UseCaseInst) UpdateUser(token *model.Token) (*model.Token, error) {
+func (useCase *UsecaseInst) UpdateUser(token *model.Token) (*model.Token, error) {
 	resToken, err := useCase.store.UpdateUser(token)
 
 	return resToken, err
 }
 
-func (useCase *UseCaseInst) CheckIsValidUser(user *model.User) (bool, error) {
+func (useCase *UsecaseInst) CheckIsValidUser(user *model.User) (bool, error) {
 	found, err := useCase.store.FindUserByLoginPassword(user)
 
 	return found, err
 }
 
-func (useCase *UseCaseInst) UploadOrder(order *model.Order) (*model.Order, error) {
+func (useCase *UsecaseInst) UploadOrder(order *model.Order) (*model.Order, error) {
 	resOrder, err := useCase.client.GetOrderInfo(order.Number)
 
 	if err != nil {
@@ -64,7 +64,7 @@ func (useCase *UseCaseInst) UploadOrder(order *model.Order) (*model.Order, error
 	return resOrder, nil
 }
 
-func (useCase *UseCaseInst) GetOrders(login string) ([]model.OrderResponse, error) {
+func (useCase *UsecaseInst) GetOrders(login string) ([]model.OrderResponse, error) {
 	orders, err := useCase.store.GetOrders(login)
 
 	if err != nil {
@@ -74,7 +74,7 @@ func (useCase *UseCaseInst) GetOrders(login string) ([]model.OrderResponse, erro
 	return orders, nil
 }
 
-func (useCase *UseCaseInst) GetBalance(login string) (*model.Balance, error) {
+func (useCase *UsecaseInst) GetBalance(login string) (*model.Balance, error) {
 	order, err := useCase.client.GetOrderInfo(login)
 
 	if err != nil {
@@ -88,10 +88,10 @@ func (useCase *UseCaseInst) GetBalance(login string) (*model.Balance, error) {
 	return balance, nil
 }
 
-func (useCase *UseCaseInst) GetWithdrawls(login string) ([]model.Balance, error) {
+func (useCase *UsecaseInst) GetWithdrawls(login string) ([]model.Balance, error) {
 	return make([]model.Balance, 0), nil
 }
 
-func CreateUseCase(store store.Store) UseCase {
-	return &UseCaseInst{store: store, client: new(client.Client)}
+func CreateUseCase(store store.Store) Usecase {
+	return &UsecaseInst{store: store, client: new(client.Client)}
 }

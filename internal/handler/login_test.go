@@ -38,7 +38,7 @@ func TestLogin(t *testing.T) {
 		Password: "1234",
 	}
 
-	testUseCase := new(usecase.UseCaseMock)
+	testUseCase := new(usecase.UsecaseMock)
 
 	testUseCase.On("CheckUserExists", mock.Anything).Return(true, nil)
 

@@ -44,7 +44,7 @@ func TestRegister(t *testing.T) {
 		Password: "1234",
 	}
 
-	testuseCase := new(usecase.UseCaseMock)
+	testuseCase := new(usecase.UsecaseMock)
 
 	testuseCase.On("CheckUserExists", existedUser).Return(true, nil)
 	testuseCase.On("CheckUserExists", trueUser).Return(false, nil)

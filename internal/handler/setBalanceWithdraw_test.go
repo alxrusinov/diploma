@@ -36,7 +36,7 @@ func TestSetBalanceWithdraw(t *testing.T) {
 		ProcessedAt: "",
 	}
 
-	testuseCase := new(usecase.UseCaseMock)
+	testuseCase := new(usecase.UsecaseMock)
 
 	testuseCase.On("UploadOrder", mock.Anything).Return(&model.Order{
 		Number:  "123",

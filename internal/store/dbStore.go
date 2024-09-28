@@ -2,6 +2,8 @@ package store
 
 import (
 	"database/sql"
+	"errors"
+	"io"
 	"log"
 
 	"github.com/alxrusinov/diploma/internal/migrator"
@@ -14,6 +16,21 @@ type DBStore struct {
 }
 
 func (store *DBStore) FindUserByLogin(user *model.User) (bool, error) {
+
+	row := store.db.QueryRow(`SELECT id FROM users WHERE login = $1`, user.Login)
+
+	var login string
+
+	err := row.Scan(&login)
+
+	if err != nil && !errors.Is(err, io.EOF) {
+		return false, err
+	}
+
+	if login == "" {
+		return false, nil
+	}
+
 	return true, nil
 }
 

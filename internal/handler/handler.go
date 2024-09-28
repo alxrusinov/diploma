@@ -10,7 +10,7 @@ type options struct {
 }
 
 type Handler struct {
-	useCase    usecase.UseCase
+	useCase    usecase.Usecase
 	options    options
 	Middleware Middleware
 	AuthClient *authenticate.Auth
@@ -20,7 +20,7 @@ const (
 	TokenCookie = "token"
 )
 
-func CreateHandler(useCase usecase.UseCase, responseAddr string, authClient *authenticate.Auth) *Handler {
+func CreateHandler(useCase usecase.Usecase, responseAddr string, authClient *authenticate.Auth) *Handler {
 	handler := &Handler{
 		useCase: useCase,
 		options: options{
