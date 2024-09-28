@@ -26,7 +26,7 @@ func (handler *Handler) SetBalanceWithDraw(ctx *gin.Context) {
 		Number: withdraw.Order,
 	}
 
-	order, err := handler.useCase.UploadOrder(sendOrder)
+	order, err := handler.usecase.UploadOrder(sendOrder)
 
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusInternalServerError)

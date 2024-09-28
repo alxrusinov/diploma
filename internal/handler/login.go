@@ -22,7 +22,7 @@ func (handler *Handler) Login(ctx *gin.Context) {
 		return
 	}
 
-	isValid, err := handler.useCase.CheckIsValidUser(User)
+	isValid, err := handler.usecase.CheckIsValidUser(User)
 
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusInternalServerError)
@@ -41,7 +41,7 @@ func (handler *Handler) Login(ctx *gin.Context) {
 		return
 	}
 
-	_, err = handler.useCase.UpdateUser(token)
+	_, err = handler.usecase.UpdateUser(token)
 
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusInternalServerError)

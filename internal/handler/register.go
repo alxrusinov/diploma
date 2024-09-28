@@ -22,7 +22,7 @@ func (handler *Handler) Register(ctx *gin.Context) {
 		return
 	}
 
-	isUserExist, err := handler.useCase.CheckUserExists(NewUser)
+	isUserExist, err := handler.usecase.CheckUserExists(NewUser)
 
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusInternalServerError)
@@ -34,7 +34,7 @@ func (handler *Handler) Register(ctx *gin.Context) {
 		return
 	}
 
-	err = handler.useCase.CreateUser(NewUser)
+	err = handler.usecase.CreateUser(NewUser)
 
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusInternalServerError)
@@ -48,7 +48,7 @@ func (handler *Handler) Register(ctx *gin.Context) {
 		return
 	}
 
-	_, err = handler.useCase.UpdateUser(token)
+	_, err = handler.usecase.UpdateUser(token)
 
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusInternalServerError)

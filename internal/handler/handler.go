@@ -10,7 +10,7 @@ type options struct {
 }
 
 type Handler struct {
-	useCase    usecase.Usecase
+	usecase    usecase.Usecase
 	options    options
 	Middleware Middleware
 	AuthClient *authenticate.Auth
@@ -22,7 +22,7 @@ const (
 
 func CreateHandler(usecaseInst usecase.Usecase, responseAddr string, authClient *authenticate.Auth) *Handler {
 	handler := &Handler{
-		useCase: usecaseInst,
+		usecase: usecaseInst,
 		options: options{
 			responseAddr: responseAddr,
 		},

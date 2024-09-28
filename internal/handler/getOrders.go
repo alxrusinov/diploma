@@ -21,7 +21,7 @@ func (handler *Handler) GetOrders(ctx *gin.Context) {
 		return
 	}
 
-	orders, err := handler.useCase.GetOrders(token.UserName)
+	orders, err := handler.usecase.GetOrders(token.UserName)
 
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusInternalServerError)
