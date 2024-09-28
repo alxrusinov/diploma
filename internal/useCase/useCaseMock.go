@@ -1,4 +1,4 @@
-package useCase
+package usecase
 
 import (
 	"github.com/alxrusinov/diploma/internal/model"

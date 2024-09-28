@@ -50,6 +50,11 @@ func (handler *Handler) Register(ctx *gin.Context) {
 
 	_, err = handler.useCase.UpdateUser(token)
 
+	if err != nil {
+		ctx.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
 	ctx.SetCookie(TokenCookie, token.Token, int(token.Exp), "/", "localhost", false, true)
 	ctx.Status(http.StatusOK)
 }

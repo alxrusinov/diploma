@@ -9,7 +9,7 @@ import (
 
 	"github.com/alxrusinov/diploma/internal/authenticate"
 	"github.com/alxrusinov/diploma/internal/model"
-	"github.com/alxrusinov/diploma/internal/useCase"
+	"github.com/alxrusinov/diploma/internal/usecase"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -38,7 +38,7 @@ func TestLogin(t *testing.T) {
 		Password: "1234",
 	}
 
-	testUseCase := new(useCase.UseCaseMock)
+	testUseCase := new(usecase.UseCaseMock)
 
 	testUseCase.On("CheckUserExists", mock.Anything).Return(true, nil)
 
@@ -116,6 +116,8 @@ func TestLogin(t *testing.T) {
 		router.ServeHTTP(w, request)
 
 		res := w.Result()
+
+		defer res.Body.Close()
 
 		assert.Equal(t, tt.code, res.StatusCode)
 

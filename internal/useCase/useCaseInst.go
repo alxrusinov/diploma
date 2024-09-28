@@ -1,4 +1,4 @@
-package useCase
+package usecase
 
 import (
 	"errors"
@@ -46,6 +46,11 @@ func (useCase *UseCaseInst) CheckIsValidUser(user *model.User) (bool, error) {
 
 func (useCase *UseCaseInst) UploadOrder(order *model.Order) (*model.Order, error) {
 	resOrder, err := useCase.client.GetOrderInfo(order.Number)
+
+	if err != nil {
+		return nil, err
+	}
+
 	ok, err := useCase.store.AddOrder(resOrder)
 
 	if err != nil {

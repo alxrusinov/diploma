@@ -23,6 +23,11 @@ func (handler *Handler) GetWithdrawals(ctx *gin.Context) {
 
 	balances, err := handler.useCase.GetWithdrawls(token.UserName)
 
+	if err != nil {
+		ctx.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
 	if len(balances) == 0 {
 		ctx.AbortWithStatus(http.StatusNoContent)
 		return

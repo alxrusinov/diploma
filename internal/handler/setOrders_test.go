@@ -11,7 +11,7 @@ import (
 	"github.com/alxrusinov/diploma/internal/authenticate"
 	"github.com/alxrusinov/diploma/internal/customerrors"
 	"github.com/alxrusinov/diploma/internal/model"
-	"github.com/alxrusinov/diploma/internal/useCase"
+	"github.com/alxrusinov/diploma/internal/usecase"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
@@ -39,7 +39,7 @@ func TestSetOrders(t *testing.T) {
 		Number: "999",
 	}
 
-	testuseCase := new(useCase.UseCaseMock)
+	testuseCase := new(usecase.UseCaseMock)
 
 	testuseCase.On("UploadOrder", validOrder).Return(validOrder, nil)
 
@@ -108,6 +108,8 @@ func TestSetOrders(t *testing.T) {
 		router.ServeHTTP(w, request)
 
 		res := w.Result()
+
+		defer res.Body.Close()
 
 		assert.Equal(t, tt.code, res.StatusCode)
 

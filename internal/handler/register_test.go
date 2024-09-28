@@ -10,7 +10,7 @@ import (
 
 	"github.com/alxrusinov/diploma/internal/authenticate"
 	"github.com/alxrusinov/diploma/internal/model"
-	"github.com/alxrusinov/diploma/internal/useCase"
+	"github.com/alxrusinov/diploma/internal/usecase"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -44,7 +44,7 @@ func TestRegister(t *testing.T) {
 		Password: "1234",
 	}
 
-	testuseCase := new(useCase.UseCaseMock)
+	testuseCase := new(usecase.UseCaseMock)
 
 	testuseCase.On("CheckUserExists", existedUser).Return(true, nil)
 	testuseCase.On("CheckUserExists", trueUser).Return(false, nil)
@@ -131,6 +131,8 @@ func TestRegister(t *testing.T) {
 		router.ServeHTTP(w, request)
 
 		res := w.Result()
+
+		defer res.Body.Close()
 
 		assert.Equal(t, tt.code, res.StatusCode)
 

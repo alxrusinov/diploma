@@ -9,7 +9,7 @@ import (
 
 	"github.com/alxrusinov/diploma/internal/authenticate"
 	"github.com/alxrusinov/diploma/internal/model"
-	"github.com/alxrusinov/diploma/internal/useCase"
+	"github.com/alxrusinov/diploma/internal/usecase"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
@@ -34,7 +34,7 @@ func TestGetOrders(t *testing.T) {
 
 	emptyOrderList := make([]model.OrderResponse, 0)
 
-	testuseCase := new(useCase.UseCaseMock)
+	testuseCase := new(usecase.UseCaseMock)
 
 	testuseCase.On("GetOrders", validLogin).Return(orderList, nil)
 
@@ -94,6 +94,8 @@ func TestGetOrders(t *testing.T) {
 		router.ServeHTTP(w, request)
 
 		res := w.Result()
+
+		defer res.Body.Close()
 
 		assert.Equal(t, tt.code, res.StatusCode)
 
