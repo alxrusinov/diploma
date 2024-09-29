@@ -22,11 +22,25 @@ func (handler *Handler) SetBalanceWithDraw(ctx *gin.Context) {
 		return
 	}
 
+	tokenString, err := ctx.Cookie(TokenCookie)
+
+	if err != nil {
+		ctx.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	token, err := handler.AuthClient.ParseToken(tokenString)
+
+	if err != nil {
+		ctx.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
 	sendOrder := &model.Order{
 		Number: withdraw.Order,
 	}
 
-	order, err := handler.usecase.UploadOrder(sendOrder)
+	order, err := handler.usecase.UploadOrder(sendOrder, token.UserName)
 
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusInternalServerError)

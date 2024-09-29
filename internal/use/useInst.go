@@ -19,13 +19,13 @@ func (useCase *UsecaseInst) CheckUserExists(user *model.User) (bool, error) {
 }
 
 func (useCase *UsecaseInst) CreateUser(user *model.User) error {
-	found, err := useCase.store.CreateUser(user)
+	ok, err := useCase.store.CreateUser(user)
 
 	if err != nil {
 		return err
 	}
 
-	if !found {
+	if !ok {
 		return errors.New("user was not created")
 	}
 
@@ -44,14 +44,14 @@ func (useCase *UsecaseInst) CheckIsValidUser(user *model.User) (bool, error) {
 	return found, err
 }
 
-func (useCase *UsecaseInst) UploadOrder(order *model.Order) (*model.Order, error) {
+func (useCase *UsecaseInst) UploadOrder(order *model.Order, login string) (*model.Order, error) {
 	resOrder, err := useCase.client.GetOrderInfo(order.Number)
 
 	if err != nil {
 		return nil, err
 	}
 
-	ok, err := useCase.store.AddOrder(resOrder)
+	ok, err := useCase.store.AddOrder(resOrder, login)
 
 	if err != nil {
 		return nil, err

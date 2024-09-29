@@ -33,7 +33,7 @@ func (m *DBStoreMock) CheckIsValidUser(user *model.User) (bool, error) {
 	return args.Bool(0), args.Error(1)
 }
 
-func (m *DBStoreMock) UploadOrder(order *model.Order) error {
+func (m *DBStoreMock) UploadOrder(order *model.Order, login string) error {
 	args := m.Called(order)
 
 	return args.Error(0)

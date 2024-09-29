@@ -13,6 +13,7 @@ CREATE TABLE
         number TEXT,
         process TEXT,
         accrual INT,
+        uploaded_at TEXT,
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
     );
 

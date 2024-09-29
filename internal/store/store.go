@@ -9,7 +9,7 @@ type Store interface {
 	FindUserByLoginPassword(user *model.User) (bool, error)
 	CreateUser(user *model.User) (bool, error)
 	UpdateUser(token *model.Token) (*model.Token, error)
-	AddOrder(order *model.Order) (bool, error)
+	AddOrder(order *model.Order, login string) (bool, error)
 	GetOrders(login string) ([]model.OrderResponse, error)
 	RunMigration() error
 }

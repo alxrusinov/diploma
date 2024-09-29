@@ -14,6 +14,7 @@ import (
 	"github.com/alxrusinov/diploma/internal/use"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 func TestSetOrders(t *testing.T) {
@@ -41,13 +42,13 @@ func TestSetOrders(t *testing.T) {
 
 	testuseCase := new(use.UsecaseMock)
 
-	testuseCase.On("UploadOrder", validOrder).Return(validOrder, nil)
+	testuseCase.On("UploadOrder", validOrder, mock.Anything).Return(validOrder, nil)
 
-	testuseCase.On("UploadOrder", duplicateOwnerOrder).Return(duplicateOwnerOrder, new(customerrors.DuplicateOwnerOrderError))
+	testuseCase.On("UploadOrder", duplicateOwnerOrder, mock.Anything).Return(duplicateOwnerOrder, new(customerrors.DuplicateOwnerOrderError))
 
-	testuseCase.On("UploadOrder", duplicateUserOrder).Return(duplicateUserOrder, new(customerrors.DuplicateUserOrderError))
+	testuseCase.On("UploadOrder", duplicateUserOrder, mock.Anything).Return(duplicateUserOrder, new(customerrors.DuplicateUserOrderError))
 
-	testuseCase.On("UploadOrder", anotherErrorOrder).Return(anotherErrorOrder, errors.New("error"))
+	testuseCase.On("UploadOrder", anotherErrorOrder, mock.Anything).Return(anotherErrorOrder, errors.New("error"))
 
 	authClient := authenticate.CreateAuth()
 

@@ -31,7 +31,21 @@ func (handler *Handler) SetOrders(ctx *gin.Context) {
 		return
 	}
 
-	_, err = handler.usecase.UploadOrder(order)
+	tokenString, err := ctx.Cookie(TokenCookie)
+
+	if err != nil {
+		ctx.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	token, err := handler.AuthClient.ParseToken(tokenString)
+
+	if err != nil {
+		ctx.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	_, err = handler.usecase.UploadOrder(order, token.UserName)
 
 	if err != nil {
 		duplicateOwnerError := new(customerrors.DuplicateOwnerOrderError)
