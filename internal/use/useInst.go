@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/alxrusinov/diploma/internal/client"
+	"github.com/alxrusinov/diploma/internal/customerrors"
 	"github.com/alxrusinov/diploma/internal/model"
 	"github.com/alxrusinov/diploma/internal/store"
 )
@@ -45,20 +46,37 @@ func (useCase *UsecaseInst) CheckIsValidUser(user *model.User) (bool, error) {
 }
 
 func (useCase *UsecaseInst) UploadOrder(order *model.Order, login string) (*model.Order, error) {
-	resOrder, err := useCase.client.GetOrderInfo(order.Number)
+	var resOrder *model.Order
+	noOrderError := new(customerrors.NoOrderError)
+	serverError := new(customerrors.ServerError)
 
-	if err != nil {
-		return nil, err
-	}
+	for {
+		resOrder, err := useCase.client.GetOrderInfo(order.Number)
 
-	ok, err := useCase.store.AddOrder(resOrder, login)
+		if err != nil {
+			if errors.As(err, &serverError) {
+				continue
+			}
 
-	if err != nil {
-		return nil, err
-	}
+			if errors.As(err, &noOrderError) {
+				return nil, err
+			}
 
-	if !ok {
-		return nil, errors.New("order was not uploaded")
+			return nil, err
+		}
+
+		ok, err := useCase.store.AddOrder(resOrder, login)
+
+		if err != nil {
+			return nil, err
+		}
+
+		if !ok {
+			return nil, errors.New("order was not uploaded")
+		}
+
+		break
+
 	}
 
 	return resOrder, nil

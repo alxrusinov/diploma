@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/alxrusinov/diploma/internal/customerrors"
 	"github.com/alxrusinov/diploma/internal/model"
 )
 
@@ -32,13 +33,22 @@ func (client *Client) GetOrderInfo(orderNumber string) (*model.Order, error) {
 
 	defer res.Body.Close()
 
-	order := &model.Order{}
+	if res.StatusCode == http.StatusOK {
+		order := &model.Order{}
 
-	if err := json.NewDecoder(res.Request.Body).Decode(&order); err != nil && !errors.Is(err, io.EOF) {
-		return nil, err
+		if err := json.NewDecoder(res.Request.Body).Decode(&order); err != nil && !errors.Is(err, io.EOF) {
+			return nil, err
+		}
+
+		return order, nil
 	}
 
-	return order, nil
+	if res.StatusCode == http.StatusNoContent {
+		return nil, &customerrors.NoOrderError{}
+	}
+
+	return nil, &customerrors.ServerError{}
+
 }
 
 func CreateClient() *Client {
