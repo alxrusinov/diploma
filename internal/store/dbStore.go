@@ -90,9 +90,9 @@ func (store *DBStore) CreateUser(user *model.User) (bool, error) {
 func (store *DBStore) UpdateUser(token *model.Token) (*model.Token, error) {
 	query := `UPDATE users SET token = $1 WHERE login = $2`
 
-	_, err := store.db.Query(query, token.Token, token.UserName)
+	tokenRows, err := store.db.Query(query, token.Token, token.UserName)
 
-	if err != nil {
+	if err != nil || tokenRows.Err() != nil {
 		return nil, err
 	}
 
@@ -115,10 +115,10 @@ func (store *DBStore) AddOrder(order *model.Order, login string) (bool, error) {
 		return false, err
 	}
 
-	_, err = tx.Query(`INSERT INTO orders (user_id, number, process, accrual, uploaded_at)
+	row, err := tx.Query(`INSERT INTO orders (user_id, number, process, accrual, uploaded_at)
 	VALUES ($1, $2, $3, $4, $5)`, userID, order.Number, order.Process, order.Accrual, time.Now().Format(time.RFC3339))
 
-	if err != nil {
+	if err != nil || row.Err() != nil {
 		tx.Rollback()
 		return false, err
 	}
@@ -132,9 +132,9 @@ func (store *DBStore) AddOrder(order *model.Order, login string) (bool, error) {
 		return false, err
 	}
 
-	_, err = tx.Query(`UPDATE balance SET balance = $1 WHERE user_id = $2`, sum+order.Accrual, userID)
+	rows, err := tx.Query(`UPDATE balance SET balance = $1 WHERE user_id = $2`, sum+order.Accrual, userID)
 
-	if err != nil {
+	if err != nil || rows.Err() != nil {
 		tx.Rollback()
 		return false, err
 	}
