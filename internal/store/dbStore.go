@@ -9,6 +9,7 @@ import (
 
 	"github.com/alxrusinov/diploma/internal/migrator"
 	"github.com/alxrusinov/diploma/internal/model"
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 type DBStore struct {
