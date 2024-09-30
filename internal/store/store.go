@@ -3,6 +3,7 @@ package store
 import (
 	"database/sql"
 	"log"
+	"time"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
@@ -24,6 +25,10 @@ func NewStore(databaseURI string, migrator Migrator) *Store {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	db.SetMaxOpenConns(5)
+	db.SetMaxIdleConns(5)
+	db.SetConnMaxLifetime(time.Minute)
 
 	store.db = db
 	store.migrator = migrator

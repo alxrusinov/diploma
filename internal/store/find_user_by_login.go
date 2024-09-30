@@ -9,7 +9,7 @@ import (
 
 func (store *Store) FindUserByLogin(user *model.User) (bool, error) {
 
-	row := store.db.QueryRow(`SELECT id FROM users WHERE login = $1`, user.Login)
+	row := store.db.QueryRow(selectUserByLoginQuery, user.Login)
 
 	var login string
 

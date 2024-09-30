@@ -8,7 +8,7 @@ import (
 )
 
 func (store *Store) FindUserByLoginPassword(user *model.User) (bool, error) {
-	row := store.db.QueryRow(`SELECT id FROM users WHERE login = $1 and password = $2`, user.Login, user.Password)
+	row := store.db.QueryRow(selectUserByLoiginPasswordQuery, user.Login, user.Password)
 
 	var login string
 

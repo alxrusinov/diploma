@@ -15,15 +15,14 @@ func (store *Store) AddOrder(order *model.Order, login string) (bool, error) {
 
 	var userID string
 
-	err = tx.QueryRow(`SELECT id FROM users WHERE login = $1`, login).Scan(&userID)
+	err = tx.QueryRow(selectUserByLoginQuery, login).Scan(&userID)
 
 	if err != nil {
 		tx.Rollback()
 		return false, err
 	}
 
-	row, err := tx.Query(`INSERT INTO orders (user_id, number, process, accrual, uploaded_at)
-	VALUES ($1, $2, $3, $4, $5)`, userID, order.Number, order.Process, order.Accrual, time.Now().Format(time.RFC3339))
+	row, err := tx.Query(insertOrderQuery, userID, order.Number, order.Process, order.Accrual, time.Now().Format(time.RFC3339))
 
 	if err != nil || row.Err() != nil {
 		tx.Rollback()
@@ -32,14 +31,14 @@ func (store *Store) AddOrder(order *model.Order, login string) (bool, error) {
 
 	var sum int
 
-	err = tx.QueryRow(`SELECT balance FROM balance WHERE user_id = $1`, userID).Scan(&sum)
+	err = tx.QueryRow(selectBalanceQuery, userID).Scan(&sum)
 
 	if err != nil {
 		tx.Rollback()
 		return false, err
 	}
 
-	rows, err := tx.Query(`UPDATE balance SET balance = $1 WHERE user_id = $2`, sum+order.Accrual, userID)
+	rows, err := tx.Query(updateBalanceQuery, sum+order.Accrual, userID)
 
 	if err != nil || rows.Err() != nil {
 		tx.Rollback()

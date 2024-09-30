@@ -6,13 +6,13 @@ func (store *Store) GetOrders(login string) ([]model.OrderResponse, error) {
 	res := make([]model.OrderResponse, 0)
 	var userID string
 
-	err := store.db.QueryRow(`SELECT id FROM users WHERE login = $1`, login).Scan(&userID)
+	err := store.db.QueryRow(selectUserByLoginQuery, login).Scan(&userID)
 
 	if err != nil {
 		return res, err
 	}
 
-	rows, err := store.db.Query(`SELECT number, process, accrual, uploaded_at FROM orders WHERE user_id = $1`, userID)
+	rows, err := store.db.Query(selectOrdersQuery, userID)
 
 	if err != nil {
 		return res, err

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 
 	"github.com/alxrusinov/diploma/internal/customerrors"
 	"github.com/alxrusinov/diploma/internal/model"
@@ -53,6 +54,8 @@ func (client *Client) GetOrderInfo(orderNumber string) (*model.Order, error) {
 
 func CreateClient() *Client {
 	return &Client{
-		client: &http.Client{},
+		client: &http.Client{
+			Timeout: time.Second * 60,
+		},
 	}
 }
