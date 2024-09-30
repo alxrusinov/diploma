@@ -9,7 +9,7 @@ import (
 
 	"github.com/alxrusinov/diploma/internal/authenticate"
 	"github.com/alxrusinov/diploma/internal/model"
-	"github.com/alxrusinov/diploma/internal/use"
+	"github.com/alxrusinov/diploma/internal/usecase"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -38,7 +38,7 @@ func TestLogin(t *testing.T) {
 		Password: "1234",
 	}
 
-	testUseCase := new(use.UsecaseMock)
+	testUseCase := new(usecase.UsecaseMock)
 
 	testUseCase.On("CheckUserExists", mock.Anything).Return(true, nil)
 
@@ -51,9 +51,9 @@ func TestLogin(t *testing.T) {
 		Token:    "123.456.789",
 	}, nil)
 
-	authClient := authenticate.CreateAuth()
+	authClient := authenticate.NewAuth()
 
-	testHandler := CreateHandler(testUseCase, "http://localhost:8080", authClient)
+	testHandler := NewHandler(testUseCase, "http://localhost:8080", authClient)
 
 	router := gin.New()
 

@@ -3,14 +3,13 @@ package handler
 import (
 	"net/http"
 
-	"github.com/alxrusinov/diploma/internal/authenticate"
 	"github.com/gin-gonic/gin"
 )
 
 type Middleware struct {
 }
 
-func (middleware Middleware) CheckAuth(authClient *authenticate.Auth) gin.HandlerFunc {
+func (middleware Middleware) CheckAuth(authClient Auth) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		tokenString, err := ctx.Cookie(TokenCookie)
 

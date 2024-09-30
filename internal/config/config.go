@@ -2,9 +2,16 @@ package config
 
 import (
 	"flag"
-	"fmt"
+	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/alxrusinov/diploma/internal/authenticate"
+	"github.com/alxrusinov/diploma/internal/handler"
+	"github.com/alxrusinov/diploma/internal/migrator"
+	"github.com/alxrusinov/diploma/internal/server"
+	"github.com/alxrusinov/diploma/internal/store"
+	"github.com/alxrusinov/diploma/internal/usecase"
 )
 
 const (
@@ -29,9 +36,7 @@ func (config *Config) Init() {
 	flag.StringVar(&config.DatabaseURI, "d", "", "connection address of database")
 
 	flag.StringVar(&config.AccrualSystemAddress, "r", "", "accrual system address")
-}
 
-func (config *Config) Parse() {
 	flag.Parse()
 
 	runAddress := os.Getenv(RunAddress)
@@ -49,12 +54,28 @@ func (config *Config) Parse() {
 	if config.AccrualSystemAddress == "" {
 		config.AccrualSystemAddress = accrualSystemAddress
 	}
-
 }
 
-func CreateConfig() *Config {
+func (config *Config) Run() {
+	migratorInst := migrator.NewMigrator()
+	store := store.NewStore(config.DatabaseURI, migratorInst)
+	authClient := authenticate.NewAuth()
+	uc := usecase.NewUsecase(store)
+	router := handler.NewHandler(uc, config.AccrualSystemAddress, authClient)
+	server := server.NewServer(router, config.RunAddress)
+
+	err := store.RunMigration()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	server.Run()
+}
+
+func NewConfig() *Config {
 	path, _ := filepath.Abs(MigrationsDir)
-	fmt.Printf("%#v\n", path)
+
 	return &Config{
 		MigrationsDir: path,
 	}

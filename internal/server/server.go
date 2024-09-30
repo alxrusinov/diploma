@@ -1,21 +1,31 @@
 package server
 
 import (
-	"github.com/alxrusinov/diploma/internal/handler"
 	"github.com/gin-gonic/gin"
 )
 
 type Server struct {
 	mux        *gin.Engine
-	handler    *handler.Handler
+	handler    Handler
 	runAddress string
+}
+
+type Handler interface {
+	GetBalance(ctx *gin.Context)
+	GetOrders(ctx *gin.Context)
+	GetWithdrawals(ctx *gin.Context)
+	Login(ctx *gin.Context)
+	Register(ctx *gin.Context)
+	SetOrders(ctx *gin.Context)
+	SetBalanceWithDraw(ctx *gin.Context)
+	CheckAuth() gin.HandlerFunc
 }
 
 func (server *Server) Run() {
 	server.mux.Run(server.runAddress)
 }
 
-func CreateServer(handler *handler.Handler, runAddress string) *Server {
+func NewServer(handler Handler, runAddress string) *Server {
 	server := &Server{
 		mux:        gin.New(),
 		handler:    handler,
@@ -30,7 +40,7 @@ func CreateServer(handler *handler.Handler, runAddress string) *Server {
 
 	userAPI := api.Group("/user")
 
-	userAPI.Use(server.handler.Middleware.CheckAuth(server.handler.AuthClient))
+	userAPI.Use(server.handler.CheckAuth())
 
 	userAPI.POST("/orders", server.handler.SetOrders)
 

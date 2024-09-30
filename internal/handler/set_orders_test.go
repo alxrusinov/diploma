@@ -11,7 +11,7 @@ import (
 	"github.com/alxrusinov/diploma/internal/authenticate"
 	"github.com/alxrusinov/diploma/internal/customerrors"
 	"github.com/alxrusinov/diploma/internal/model"
-	"github.com/alxrusinov/diploma/internal/use"
+	"github.com/alxrusinov/diploma/internal/usecase"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -40,7 +40,7 @@ func TestSetOrders(t *testing.T) {
 		Number: "999",
 	}
 
-	testuseCase := new(use.UsecaseMock)
+	testuseCase := new(usecase.UsecaseMock)
 
 	testuseCase.On("UploadOrder", validOrder, mock.Anything).Return(validOrder, nil)
 
@@ -50,9 +50,9 @@ func TestSetOrders(t *testing.T) {
 
 	testuseCase.On("UploadOrder", anotherErrorOrder, mock.Anything).Return(anotherErrorOrder, errors.New("error"))
 
-	authClient := authenticate.CreateAuth()
+	authClient := authenticate.NewAuth()
 
-	testHandler := CreateHandler(testuseCase, "http://localhost:8080", authClient)
+	testHandler := NewHandler(testuseCase, "http://localhost:8080", authClient)
 
 	router := gin.New()
 

@@ -9,7 +9,7 @@ import (
 
 	"github.com/alxrusinov/diploma/internal/authenticate"
 	"github.com/alxrusinov/diploma/internal/model"
-	"github.com/alxrusinov/diploma/internal/use"
+	"github.com/alxrusinov/diploma/internal/usecase"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -36,16 +36,16 @@ func TestSetBalanceWithdraw(t *testing.T) {
 		ProcessedAt: "",
 	}
 
-	testuseCase := new(use.UsecaseMock)
+	testuseCase := new(usecase.UsecaseMock)
 
 	testuseCase.On("UploadOrder", mock.Anything).Return(&model.Order{
 		Number:  "123",
 		Accrual: 400,
 	}, nil)
 
-	authClient := authenticate.CreateAuth()
+	authClient := authenticate.NewAuth()
 
-	testHandler := CreateHandler(testuseCase, "http://localhost:8080", authClient)
+	testHandler := NewHandler(testuseCase, "http://localhost:8080", authClient)
 
 	router := gin.New()
 

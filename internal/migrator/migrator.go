@@ -54,6 +54,6 @@ func (m *Migrator) ApplyMigrations(db *sql.DB) error {
 	return nil
 }
 
-func CreateMigrator() *Migrator {
+func NewMigrator() *Migrator {
 	return MustGetNewMigrator(migrationsFS, migrationsDir)
 }

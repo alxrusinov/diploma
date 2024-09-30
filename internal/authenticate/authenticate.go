@@ -72,7 +72,7 @@ func (auth *Auth) ParseToken(tokenString string) (*model.Token, error) {
 	return token, nil
 }
 
-func CreateAuth() *Auth {
+func NewAuth() *Auth {
 	return &Auth{
 		Sault: []byte("quod licet jovi, non licet bovi"),
 	}
