@@ -22,19 +22,19 @@ func (handler *Handler) Login(ctx *gin.Context) {
 		return
 	}
 
-	userId, err := handler.usecase.CheckIsValidUser(User)
+	userID, err := handler.usecase.CheckIsValidUser(User)
 
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
-	if userId == "" {
+	if userID == "" {
 		ctx.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
 
-	User.ID = userId
+	User.ID = userID
 
 	token, err := handler.AuthClient.GetToken(User)
 

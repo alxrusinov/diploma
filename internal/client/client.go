@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/alxrusinov/diploma/internal/customerrors"
 	"github.com/alxrusinov/diploma/internal/model"
 )
 
@@ -43,10 +42,16 @@ func (client *Client) GetOrderInfo(orderNumber string) (*model.Order, error) {
 				return nil, err
 			}
 
-			return order, nil
+			if order.Process == "PROCESSED" {
+				return order, nil
+			}
+
+			if order.Process == "INVALID" {
+				return nil, errors.New("invalid order")
+			}
+
 		}
 
-		return nil, &customerrors.ServerError{}
 	}
 
 }
