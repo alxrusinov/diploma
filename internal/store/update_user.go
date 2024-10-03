@@ -1,9 +1,19 @@
 package store
 
-import "github.com/alxrusinov/diploma/internal/model"
+import (
+	"strconv"
+
+	"github.com/alxrusinov/diploma/internal/model"
+)
 
 func (store *Store) UpdateUser(token *model.Token) (*model.Token, error) {
-	tokenRows, err := store.db.Query(updateUserTokenQuery, token.Token, token.UserName)
+	numID, err := strconv.Atoi(token.UserID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	tokenRows, err := store.db.Query(updateUserTokenQuery, token.Token, numID)
 
 	if err != nil || tokenRows.Err() != nil {
 		return nil, err

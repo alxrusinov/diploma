@@ -4,11 +4,11 @@ import "github.com/alxrusinov/diploma/internal/model"
 
 const ()
 
-func (store *Store) CreateUser(user *model.User) (bool, error) {
+func (store *Store) CreateUser(user *model.User) (string, error) {
 	tx, err := store.db.Begin()
 
 	if err != nil {
-		return false, err
+		return "", err
 	}
 
 	var userID string
@@ -17,17 +17,17 @@ func (store *Store) CreateUser(user *model.User) (bool, error) {
 
 	if err != nil {
 		tx.Rollback()
-		return false, err
+		return "", err
 	}
 
 	_, err = tx.Exec(insertBalanceQuery, userID, 0)
 
 	if err != nil {
 		tx.Rollback()
-		return false, err
+		return "", err
 	}
 
 	tx.Commit()
 
-	return true, nil
+	return userID, nil
 }

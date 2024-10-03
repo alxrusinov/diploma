@@ -1,8 +1,8 @@
 package store
 
 import (
+	"database/sql"
 	"errors"
-	"io"
 
 	"github.com/alxrusinov/diploma/internal/model"
 )
@@ -15,7 +15,7 @@ func (store *Store) FindUserByLogin(user *model.User) (bool, error) {
 
 	err := row.Scan(&login)
 
-	if err != nil && !errors.Is(err, io.EOF) {
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return false, err
 	}
 

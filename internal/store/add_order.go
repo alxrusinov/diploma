@@ -6,19 +6,10 @@ import (
 	"github.com/alxrusinov/diploma/internal/model"
 )
 
-func (store *Store) AddOrder(order *model.Order, login string) (bool, error) {
+func (store *Store) AddOrder(order *model.Order, userID string) (bool, error) {
 	tx, err := store.db.Begin()
 
 	if err != nil {
-		return false, err
-	}
-
-	var userID string
-
-	err = tx.QueryRow(selectUserByLoginQuery, login).Scan(&userID)
-
-	if err != nil {
-		tx.Rollback()
 		return false, err
 	}
 

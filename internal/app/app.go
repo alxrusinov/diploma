@@ -16,7 +16,6 @@ type Config interface {
 func (app *App) Run() {
 	app.Config.Init()
 	app.Config.Run()
-
 }
 
 func NewApp() *App {

@@ -2,6 +2,8 @@ package usecase
 
 import "github.com/alxrusinov/diploma/internal/model"
 
-func (useCase *Usecase) GetWithdrawls(login string) ([]model.Balance, error) {
-	return make([]model.Balance, 0), nil
+func (usecase *Usecase) GetWithdrawls(userID string) ([]model.Withdrawn, error) {
+	res, err := usecase.store.GetWithdrawls(userID)
+
+	return res, err
 }

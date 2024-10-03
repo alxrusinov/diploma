@@ -4,19 +4,18 @@ import (
 	"github.com/alxrusinov/diploma/internal/model"
 )
 
-type options struct {
-	responseAddr string
-}
-
 type Usecase interface {
 	CheckUserExists(user *model.User) (bool, error)
-	CreateUser(user *model.User) error
+	CreateUser(user *model.User) (string, error)
 	UpdateUser(token *model.Token) (*model.Token, error)
-	CheckIsValidUser(user *model.User) (bool, error)
-	UploadOrder(order *model.Order, login string) (*model.Order, error)
+	CheckIsValidUser(user *model.User) (string, error)
+	UploadOrder(order *model.Order, userID string) error
 	GetOrders(login string) ([]model.OrderResponse, error)
-	GetBalance(login string) (*model.Balance, error)
-	GetWithdrawls(login string) ([]model.Balance, error)
+	GetBalance(userID string) (*model.Balance, error)
+	GetOrder(order *model.Order, userID string) (*model.Order, error)
+	GetWithdrawls(userID string) ([]model.Withdrawn, error)
+	SetWithdrawls(withdrawn *model.Withdrawn, userID string) error
+	UpdateBalance(balance int, userID string) error
 }
 
 type Auth interface {
@@ -26,7 +25,6 @@ type Auth interface {
 
 type Handler struct {
 	usecase    Usecase
-	options    options
 	Middleware Middleware
 	AuthClient Auth
 }
@@ -37,10 +35,7 @@ const (
 
 func NewHandler(usecaseInst Usecase, responseAddr string, authClient Auth) *Handler {
 	handler := &Handler{
-		usecase: usecaseInst,
-		options: options{
-			responseAddr: responseAddr,
-		},
+		usecase:    usecaseInst,
 		Middleware: Middleware{},
 		AuthClient: authClient,
 	}

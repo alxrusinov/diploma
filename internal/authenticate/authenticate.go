@@ -16,6 +16,7 @@ type Auth struct {
 type CustomClaims struct {
 	Exp int64  `json:"exp"`
 	Sub string `json:"sub"`
+	ID  string `json:"id"`
 	jwt.StandardClaims
 }
 
@@ -25,6 +26,7 @@ func (auth *Auth) GetToken(user *model.User) (*model.Token, error) {
 	payload := jwt.MapClaims{
 		"sub": user.Login,
 		"exp": exp,
+		"id":  user.ID,
 	}
 	tk := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)
 
@@ -35,6 +37,7 @@ func (auth *Auth) GetToken(user *model.User) (*model.Token, error) {
 	}
 
 	token := &model.Token{
+		UserID:   user.ID,
 		UserName: user.Login,
 		Exp:      exp,
 		Token:    tokenString,
@@ -64,6 +67,7 @@ func (auth *Auth) ParseToken(tokenString string) (*model.Token, error) {
 	}
 
 	token := &model.Token{
+		UserID:   claims.ID,
 		UserName: claims.Sub,
 		Exp:      claims.Exp,
 		Token:    tokenString,

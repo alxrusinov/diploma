@@ -21,17 +21,17 @@ func (handler *Handler) GetWithdrawals(ctx *gin.Context) {
 		return
 	}
 
-	balances, err := handler.usecase.GetWithdrawls(token.UserName)
+	withdrawals, err := handler.usecase.GetWithdrawls(token.UserID)
 
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
-	if len(balances) == 0 {
+	if len(withdrawals) == 0 {
 		ctx.AbortWithStatus(http.StatusNoContent)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, balances)
+	ctx.JSON(http.StatusOK, withdrawals)
 }

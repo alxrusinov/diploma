@@ -59,8 +59,9 @@ func (config *Config) Init() {
 func (config *Config) Run() {
 	migratorInst := migrator.NewMigrator()
 	store := store.NewStore(config.DatabaseURI, migratorInst)
+
 	authClient := authenticate.NewAuth()
-	uc := usecase.NewUsecase(store)
+	uc := usecase.NewUsecase(store, config.AccrualSystemAddress)
 	router := handler.NewHandler(uc, config.AccrualSystemAddress, authClient)
 	server := server.NewServer(router, config.RunAddress)
 

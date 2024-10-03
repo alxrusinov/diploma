@@ -26,12 +26,12 @@ func NewStore(databaseURI string, migrator Migrator) *Store {
 		log.Fatal(err)
 	}
 
-	db.SetMaxOpenConns(5)
-	db.SetMaxIdleConns(5)
-	db.SetConnMaxLifetime(time.Minute)
-
 	store.db = db
 	store.migrator = migrator
+
+	store.db.SetMaxOpenConns(5)
+	store.db.SetMaxIdleConns(5)
+	store.db.SetConnMaxLifetime(time.Minute)
 
 	return store
 

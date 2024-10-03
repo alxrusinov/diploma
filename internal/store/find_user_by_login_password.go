@@ -7,7 +7,7 @@ import (
 	"github.com/alxrusinov/diploma/internal/model"
 )
 
-func (store *Store) FindUserByLoginPassword(user *model.User) (bool, error) {
+func (store *Store) FindUserByLoginPassword(user *model.User) (string, error) {
 	row := store.db.QueryRow(selectUserByLoiginPasswordQuery, user.Login, user.Password)
 
 	var login string
@@ -15,12 +15,12 @@ func (store *Store) FindUserByLoginPassword(user *model.User) (bool, error) {
 	err := row.Scan(&login)
 
 	if err != nil && !errors.Is(err, io.EOF) {
-		return false, err
+		return "", err
 	}
 
 	if login == "" {
-		return false, nil
+		return "", nil
 	}
 
-	return true, nil
+	return login, nil
 }

@@ -32,7 +32,7 @@ func (store *Store) GetOrders(login string) ([]model.OrderResponse, error) {
 
 	}
 
-	if rows.Err() != nil {
+	if err := rows.Err(); err != nil {
 		return res, err
 	}
 

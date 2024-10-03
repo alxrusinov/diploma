@@ -15,10 +15,10 @@ func (m *UsecaseMock) CheckUserExists(user *model.User) (bool, error) {
 	return args.Bool(0), args.Error(1)
 }
 
-func (m *UsecaseMock) CreateUser(user *model.User) error {
+func (m *UsecaseMock) CreateUser(user *model.User) (string, error) {
 	args := m.Called(user)
 
-	return args.Error(0)
+	return args.String(0), args.Error(1)
 }
 
 func (m *UsecaseMock) UpdateUser(token *model.Token) (*model.Token, error) {
@@ -27,16 +27,16 @@ func (m *UsecaseMock) UpdateUser(token *model.Token) (*model.Token, error) {
 	return args.Get(0).(*model.Token), args.Error(1)
 }
 
-func (m *UsecaseMock) CheckIsValidUser(user *model.User) (bool, error) {
+func (m *UsecaseMock) CheckIsValidUser(user *model.User) (string, error) {
 	args := m.Called(user)
 
-	return args.Bool(0), args.Error(1)
+	return args.String(0), args.Error(1)
 }
 
-func (m *UsecaseMock) UploadOrder(order *model.Order, login string) (*model.Order, error) {
+func (m *UsecaseMock) UploadOrder(order *model.Order, login string) error {
 	args := m.Called(order, login)
 
-	return args.Get(0).(*model.Order), args.Error(1)
+	return args.Error(0)
 }
 
 func (m *UsecaseMock) GetOrders(login string) ([]model.OrderResponse, error) {
@@ -51,8 +51,27 @@ func (m *UsecaseMock) GetBalance(login string) (*model.Balance, error) {
 	return args.Get(0).(*model.Balance), args.Error(1)
 }
 
-func (m *UsecaseMock) GetWithdrawls(login string) ([]model.Balance, error) {
+func (m *UsecaseMock) GetWithdrawls(login string) ([]model.Withdrawn, error) {
 	args := m.Called(login)
 
-	return args.Get(0).([]model.Balance), args.Error(1)
+	return args.Get(0).([]model.Withdrawn), args.Error(1)
+}
+
+func (m *UsecaseMock) GetOrder(order *model.Order, userID string) (*model.Order, error) {
+	args := m.Called(order, userID)
+
+	return args.Get(0).(*model.Order), args.Error(1)
+}
+
+func (m *UsecaseMock) UpdateBalance(balance int, userID string) error {
+	args := m.Called(balance, userID)
+
+	return args.Error(0)
+}
+
+func (m *UsecaseMock) SetWithdrawls(withdrawn *model.Withdrawn, userID string) error {
+	args := m.Called(withdrawn, userID)
+
+	return args.Error(0)
+
 }

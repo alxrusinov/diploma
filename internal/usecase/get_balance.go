@@ -2,15 +2,11 @@ package usecase
 
 import "github.com/alxrusinov/diploma/internal/model"
 
-func (useCase *Usecase) GetBalance(login string) (*model.Balance, error) {
-	order, err := useCase.client.GetOrderInfo(login)
+func (usecase *Usecase) GetBalance(userID string) (*model.Balance, error) {
+	balance, err := usecase.store.GetBalance(userID)
 
 	if err != nil {
 		return nil, err
-	}
-
-	balance := &model.Balance{
-		Current: float64(order.Accrual),
 	}
 
 	return balance, nil

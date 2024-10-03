@@ -1,6 +1,8 @@
 package model
 
-import luhn "github.com/EClaesson/go-luhn"
+import (
+	luhn "github.com/EClaesson/go-luhn"
+)
 
 type Order struct {
 	Number  string  `json:"order"`
@@ -10,6 +12,5 @@ type Order struct {
 
 func (order *Order) ValidateNumber() (bool, error) {
 	res, err := luhn.IsValid(order.Number)
-
 	return res, err
 }

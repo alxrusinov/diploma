@@ -3,6 +3,8 @@ package model
 import (
 	"errors"
 	"strconv"
+
+	luhn "github.com/EClaesson/go-luhn"
 )
 
 type Withdrawn struct {
@@ -15,8 +17,9 @@ func (w *Withdrawn) IsWithdrawAvailable(sum int) bool {
 	return w.Sum >= sum
 }
 
-func (w *Withdrawn) IsValid() bool {
-	return true
+func (w *Withdrawn) IsValid() (bool, error) {
+	res, err := luhn.IsValid(w.Order)
+	return res, err
 }
 
 func (w *Withdrawn) OrderToNumber() (int, error) {

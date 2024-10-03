@@ -45,7 +45,7 @@ func (handler *Handler) SetOrders(ctx *gin.Context) {
 		return
 	}
 
-	_, err = handler.usecase.UploadOrder(order, token.UserName)
+	err = handler.usecase.UploadOrder(order, token.UserID)
 
 	if err != nil {
 		duplicateOwnerError := new(customerrors.DuplicateOwnerOrderError)

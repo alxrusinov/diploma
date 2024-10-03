@@ -12,14 +12,20 @@ type Usecase struct {
 
 type Store interface {
 	FindUserByLogin(user *model.User) (bool, error)
-	FindUserByLoginPassword(user *model.User) (bool, error)
-	CreateUser(user *model.User) (bool, error)
+	FindUserByLoginPassword(user *model.User) (string, error)
+	CreateUser(user *model.User) (string, error)
 	UpdateUser(token *model.Token) (*model.Token, error)
-	AddOrder(order *model.Order, login string) (bool, error)
+	AddOrder(order *model.Order, userID string) (bool, error)
 	GetOrders(login string) ([]model.OrderResponse, error)
 	RunMigration() error
+	GetOrder(order *model.Order, userID string) (*model.Order, error)
+	CheckOrder(order *model.Order) (string, error)
+	GetBalance(userID string) (*model.Balance, error)
+	UpdateBalance(balance int, userID string) error
+	SetWithdrawls(withdrawn *model.Withdrawn, userID string) error
+	GetWithdrawls(userID string) ([]model.Withdrawn, error)
 }
 
-func NewUsecase(store Store) *Usecase {
-	return &Usecase{store: store, client: new(client.Client)}
+func NewUsecase(store Store, addr string) *Usecase {
+	return &Usecase{store: store, client: client.NewClient(addr)}
 }

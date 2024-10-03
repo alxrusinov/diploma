@@ -1,6 +1,8 @@
 package usecase
 
-import "github.com/alxrusinov/diploma/internal/model"
+import (
+	"github.com/alxrusinov/diploma/internal/model"
+)
 
 func (useCase *Usecase) GetOrders(login string) ([]model.OrderResponse, error) {
 	orders, err := useCase.store.GetOrders(login)
