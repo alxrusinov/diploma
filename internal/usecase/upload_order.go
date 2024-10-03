@@ -7,10 +7,10 @@ import (
 	"github.com/alxrusinov/diploma/internal/model"
 )
 
-func (useCase *Usecase) UploadOrder(order *model.Order, userID string) error {
+func (usecase *Usecase) UploadOrder(order *model.Order, userID string) error {
 	noOrderError := new(customerrors.NoOrderError)
 
-	orderUserID, err := useCase.store.CheckOrder(order)
+	orderUserID, err := usecase.store.CheckOrder(order)
 
 	if err != nil && !errors.As(err, &noOrderError) {
 		return err
@@ -25,9 +25,9 @@ func (useCase *Usecase) UploadOrder(order *model.Order, userID string) error {
 	}
 
 	go func() {
-		resOrder, _ := useCase.client.GetOrderInfo(order.Number)
+		resOrder, _ := usecase.client.GetOrderInfo(order.Number)
 
-		useCase.store.AddOrder(resOrder, userID)
+		usecase.store.AddOrder(resOrder, userID)
 	}()
 
 	return nil

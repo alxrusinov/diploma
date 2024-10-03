@@ -4,8 +4,8 @@ import (
 	"github.com/alxrusinov/diploma/internal/model"
 )
 
-func (useCase *Usecase) CreateUser(user *model.User) (string, error) {
-	userID, err := useCase.store.CreateUser(user)
+func (usecase *Usecase) CreateUser(user *model.User) (string, error) {
+	userID, err := usecase.store.CreateUser(user)
 
 	if err != nil {
 		return "", err
