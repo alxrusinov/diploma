@@ -13,8 +13,8 @@ type Withdrawn struct {
 	ProcessedAt string `json:"processed_at"`
 }
 
-func (w *Withdrawn) IsWithdrawAvailable(sum int) bool {
-	return w.Sum >= sum
+func (w *Withdrawn) IsWithdrawAvailable(balance int) bool {
+	return balance >= w.Sum
 }
 
 func (w *Withdrawn) IsValid() (bool, error) {

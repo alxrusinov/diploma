@@ -1,6 +1,9 @@
 package store
 
-import "github.com/alxrusinov/diploma/internal/model"
+import (
+	"github.com/alxrusinov/diploma/internal/customerrors"
+	"github.com/alxrusinov/diploma/internal/model"
+)
 
 func (store *Store) GetWithdrawls(userID string) ([]model.Withdrawn, error) {
 	res := make([]model.Withdrawn, 0)
@@ -26,7 +29,9 @@ func (store *Store) GetWithdrawls(userID string) ([]model.Withdrawn, error) {
 	}
 
 	if err := rows.Err(); err != nil {
-		return res, err
+		return res, &customerrors.NoContentError{
+			Err: err,
+		}
 	}
 
 	return res, nil

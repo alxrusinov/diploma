@@ -36,9 +36,9 @@ func (client *Client) GetOrderInfo(orderNumber string) (*model.Order, error) {
 		defer res.Body.Close()
 
 		if res.StatusCode == http.StatusOK {
-			order := &model.Order{}
+			order := new(model.Order)
 
-			if err := json.NewDecoder(res.Request.Body).Decode(&order); err != nil && !errors.Is(err, io.EOF) {
+			if err := json.NewDecoder(res.Body).Decode(order); err != nil && !errors.Is(err, io.EOF) {
 				return nil, err
 			}
 

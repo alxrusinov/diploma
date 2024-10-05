@@ -28,6 +28,7 @@ func (usecase *Usecase) UploadOrder(order *model.Order, userID string) error {
 		resOrder, _ := usecase.client.GetOrderInfo(order.Number)
 
 		usecase.store.AddOrder(resOrder, userID)
+
 	}()
 
 	return nil

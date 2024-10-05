@@ -21,7 +21,7 @@ func (handler *Handler) GetBalance(ctx *gin.Context) {
 		return
 	}
 
-	balance, err := handler.usecase.GetBalance(token.UserName)
+	balance, err := handler.usecase.GetBalance(token.UserID)
 
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusInternalServerError)
