@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"time"
 
@@ -35,10 +36,13 @@ func (client *Client) GetOrderInfo(orderNumber string) (*model.Order, error) {
 
 		defer res.Body.Close()
 
+		logger := log.Default()
+
 		if res.StatusCode == http.StatusOK {
 			order := new(model.Order)
 
 			if err := json.NewDecoder(res.Body).Decode(order); err != nil && !errors.Is(err, io.EOF) {
+				logger.Fatalf("ERRRR FATAL JSON - %#v", err)
 				return nil, err
 			}
 
@@ -47,6 +51,7 @@ func (client *Client) GetOrderInfo(orderNumber string) (*model.Order, error) {
 			}
 
 			if order.Process == "INVALID" {
+				logger.Fatalf("ERRRR FATAL INVALID - %#v", err)
 				return nil, errors.New("invalid order")
 			}
 
