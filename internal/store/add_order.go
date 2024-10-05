@@ -3,6 +3,7 @@ package store
 import (
 	"time"
 
+	"github.com/alxrusinov/diploma/internal/mathfn"
 	"github.com/alxrusinov/diploma/internal/model"
 )
 
@@ -13,6 +14,8 @@ func (store *Store) AddOrder(order *model.Order, userID string) (bool, error) {
 		return false, err
 	}
 
+	order.Round()
+
 	row, err := tx.Query(insertOrderQuery, userID, order.Number, order.Process, order.Accrual, time.Now().Format(time.RFC3339))
 
 	if err != nil || row.Err() != nil {
@@ -20,7 +23,7 @@ func (store *Store) AddOrder(order *model.Order, userID string) (bool, error) {
 		return false, err
 	}
 
-	var sum float32
+	var sum float64
 
 	err = tx.QueryRow(selectBalanceQuery, userID).Scan(&sum)
 
@@ -29,7 +32,7 @@ func (store *Store) AddOrder(order *model.Order, userID string) (bool, error) {
 		return false, err
 	}
 
-	rows, err := tx.Query(updateBalanceQuery, sum+order.Accrual, userID)
+	rows, err := tx.Query(updateBalanceQuery, mathfn.RoundFloat(sum+order.Accrual, 5), userID)
 
 	if err != nil || rows.Err() != nil {
 		tx.Rollback()

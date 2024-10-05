@@ -11,5 +11,7 @@ func (store *Store) GetBalance(userID string) (*model.Balance, error) {
 		return nil, err
 	}
 
+	balance.Round()
+
 	return balance, nil
 }

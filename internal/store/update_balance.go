@@ -1,7 +1,9 @@
 package store
 
-func (store *Store) UpdateBalance(balance float32, userID string) error {
-	_, err := store.db.Exec(updateBalanceQuery, balance, userID)
+import "github.com/alxrusinov/diploma/internal/mathfn"
+
+func (store *Store) UpdateBalance(balance float64, userID string) error {
+	_, err := store.db.Exec(updateBalanceQuery, mathfn.RoundFloat(balance, 5), userID)
 
 	if err != nil {
 		return err

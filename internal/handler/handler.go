@@ -15,7 +15,7 @@ type Usecase interface {
 	GetOrder(order *model.Order, userID string) (*model.Order, error)
 	GetWithdrawls(userID string) ([]model.Withdrawn, error)
 	SetWithdrawls(withdrawn *model.Withdrawn, userID string) error
-	UpdateBalance(balance float32, userID string) error
+	UpdateBalance(balance float64, userID string) error
 }
 
 type Auth interface {

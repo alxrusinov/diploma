@@ -27,7 +27,7 @@ func TestGetOrders(t *testing.T) {
 		{
 			Number:     "123",
 			Status:     model.New,
-			Accrual:    "123",
+			Accrual:    123,
 			UploadedAt: "2023-12-12",
 		},
 	}

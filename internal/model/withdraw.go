@@ -5,15 +5,16 @@ import (
 	"strconv"
 
 	luhn "github.com/EClaesson/go-luhn"
+	"github.com/alxrusinov/diploma/internal/mathfn"
 )
 
 type Withdrawn struct {
 	Order       string  `json:"order"`
-	Sum         float32 `json:"sum"`
+	Sum         float64 `json:"sum"`
 	ProcessedAt string  `json:"processed_at"`
 }
 
-func (w *Withdrawn) IsWithdrawAvailable(balance float32) bool {
+func (w *Withdrawn) IsWithdrawAvailable(balance float64) bool {
 	return balance >= w.Sum
 }
 
@@ -30,4 +31,8 @@ func (w *Withdrawn) OrderToNumber() (int, error) {
 	}
 
 	return order, nil
+}
+
+func (w *Withdrawn) Round() {
+	w.Sum = mathfn.RoundFloat(w.Sum, 5)
 }

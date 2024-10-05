@@ -19,5 +19,7 @@ func (store *Store) GetOrder(order *model.Order, userID string) (*model.Order, e
 		return nil, err
 	}
 
+	resOrder.Round()
+
 	return resOrder, nil
 }

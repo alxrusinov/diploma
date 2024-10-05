@@ -24,6 +24,7 @@ func (store *Store) GetWithdrawls(userID string) ([]model.Withdrawn, error) {
 		if err != nil {
 			return res, err
 		}
+		item.Round()
 
 		res = append(res, *item)
 	}

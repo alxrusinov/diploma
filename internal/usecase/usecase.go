@@ -21,7 +21,7 @@ type Store interface {
 	GetOrder(order *model.Order, userID string) (*model.Order, error)
 	CheckOrder(order *model.Order) (string, error)
 	GetBalance(userID string) (*model.Balance, error)
-	UpdateBalance(balance float32, userID string) error
+	UpdateBalance(balance float64, userID string) error
 	SetWithdrawls(withdrawn *model.Withdrawn, userID string) error
 	GetWithdrawls(userID string) ([]model.Withdrawn, error)
 }

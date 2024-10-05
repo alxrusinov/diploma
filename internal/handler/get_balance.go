@@ -27,6 +27,7 @@ func (handler *Handler) GetBalance(ctx *gin.Context) {
 		ctx.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
+	balance.Round()
 
 	ctx.JSON(http.StatusOK, balance)
 }

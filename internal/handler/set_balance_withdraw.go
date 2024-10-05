@@ -59,6 +59,7 @@ func (handler *Handler) SetBalanceWithDraw(ctx *gin.Context) {
 	}
 
 	withdraw.ProcessedAt = time.Now().Format(time.RFC3339)
+	withdraw.Round()
 
 	err = handler.usecase.SetWithdrawls(withdraw, token.UserID)
 

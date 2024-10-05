@@ -28,6 +28,8 @@ func (store *Store) GetOrders(login string) ([]model.OrderResponse, error) {
 			return res, err
 		}
 
+		item.Round()
+
 		res = append(res, *item)
 
 	}
