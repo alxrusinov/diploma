@@ -25,13 +25,15 @@ func (usecase *Usecase) UploadOrder(order *model.Order, userID string) error {
 		return &customerrors.DuplicateUserOrderError{}
 	}
 
+	logger := log.Default()
 	go func() {
 		resOrder, _ := usecase.client.GetOrderInfo(order.Number)
+
+		logger.Printf("RES_ORDER - %#v", resOrder)
 
 		_, err := usecase.store.AddOrder(resOrder, userID)
 
 		if err != nil {
-			logger := log.Default()
 			logger.Printf("ERROR - %#v", err)
 		}
 
