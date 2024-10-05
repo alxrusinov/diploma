@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"errors"
+	"log"
 
 	"github.com/alxrusinov/diploma/internal/customerrors"
 	"github.com/alxrusinov/diploma/internal/model"
@@ -27,7 +28,12 @@ func (usecase *Usecase) UploadOrder(order *model.Order, userID string) error {
 	go func() {
 		resOrder, _ := usecase.client.GetOrderInfo(order.Number)
 
-		usecase.store.AddOrder(resOrder, userID)
+		_, err := usecase.store.AddOrder(resOrder, userID)
+
+		if err != nil {
+			logger := log.Default()
+			logger.Printf("ERROR - %#v", err)
+		}
 
 	}()
 
