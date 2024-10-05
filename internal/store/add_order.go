@@ -20,7 +20,7 @@ func (store *Store) AddOrder(order *model.Order, userID string) (bool, error) {
 		return false, err
 	}
 
-	var sum float64
+	var sum float32
 
 	err = tx.QueryRow(selectBalanceQuery, userID).Scan(&sum)
 

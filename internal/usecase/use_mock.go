@@ -63,7 +63,7 @@ func (m *UsecaseMock) GetOrder(order *model.Order, userID string) (*model.Order,
 	return args.Get(0).(*model.Order), args.Error(1)
 }
 
-func (m *UsecaseMock) UpdateBalance(balance int, userID string) error {
+func (m *UsecaseMock) UpdateBalance(balance float32, userID string) error {
 	args := m.Called(balance, userID)
 
 	return args.Error(0)

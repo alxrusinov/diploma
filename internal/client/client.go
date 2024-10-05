@@ -57,6 +57,10 @@ func (client *Client) GetOrderInfo(orderNumber string) (*model.Order, error) {
 
 		}
 
+		if res.StatusCode == http.StatusTooManyRequests {
+			return nil, errors.New("too many requests")
+		}
+
 	}
 
 }

@@ -8,12 +8,12 @@ import (
 )
 
 type Withdrawn struct {
-	Order       string `json:"order"`
-	Sum         int    `json:"sum"`
-	ProcessedAt string `json:"processed_at"`
+	Order       string  `json:"order"`
+	Sum         float32 `json:"sum"`
+	ProcessedAt string  `json:"processed_at"`
 }
 
-func (w *Withdrawn) IsWithdrawAvailable(balance int) bool {
+func (w *Withdrawn) IsWithdrawAvailable(balance float32) bool {
 	return balance >= w.Sum
 }
 

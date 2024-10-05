@@ -44,14 +44,14 @@ func (handler *Handler) SetBalanceWithDraw(ctx *gin.Context) {
 		return
 	}
 
-	balanceInt := int(balance.Current)
+	balanceInt := balance.Current
 
 	if !withdraw.IsWithdrawAvailable(balanceInt) {
 		ctx.AbortWithStatus(http.StatusPaymentRequired)
 		return
 	}
 
-	err = handler.usecase.UpdateBalance(balanceInt-withdraw.Sum, token.UserID)
+	err = handler.usecase.UpdateBalance(balance.Current-withdraw.Sum, token.UserID)
 
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusInternalServerError)

@@ -7,7 +7,7 @@ import (
 type Order struct {
 	Number  string  `json:"order"`
 	Process Process `json:"status"`
-	Accrual float64 `json:"accrual"`
+	Accrual float32 `json:"accrual"`
 }
 
 func (order *Order) ValidateNumber() (bool, error) {
