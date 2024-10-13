@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"context"
 	"errors"
 
 	"github.com/alxrusinov/diploma/internal/customerrors"
@@ -12,8 +13,18 @@ func (usecase *Usecase) UploadOrder(order *model.Order, userID string) error {
 
 	orderUserID, err := usecase.store.CheckOrder(order)
 
-	if err != nil && !errors.As(err, &noOrderError) {
+	if err != nil {
+		if !errors.As(err, &noOrderError) {
+			order.Process = model.New
+			_, err = usecase.store.AddOrder(order, userID)
+
+			if err != nil {
+				return err
+			}
+		}
+
 		return err
+
 	}
 
 	if orderUserID != "" {
@@ -24,12 +35,18 @@ func (usecase *Usecase) UploadOrder(order *model.Order, userID string) error {
 		return &customerrors.DuplicateUserOrderError{}
 	}
 
-	go func() {
-		if resOrder, err := usecase.client.GetOrderInfo(order.Number); err != nil {
-			usecase.store.AddOrder(resOrder, userID)
-		}
+	ctx, cancel := context.WithCancel(context.Background())
 
-	}()
+	orderCh := make(chan *model.Order)
+
+	go func(ctx context.Context, orderNumber string, resCh chan<- *model.Order, cancel context.CancelFunc) {
+		usecase.client.GetOrderInfo(ctx, orderNumber, orderCh, cancel)
+
+	}(ctx, order.Number, orderCh, cancel)
+
+	go func(ctx context.Context, userID string, orderCh <-chan *model.Order, cancel context.CancelFunc) {
+		usecase.store.UpdateOrder(ctx, userID, orderCh, cancel)
+	}(ctx, userID, orderCh, cancel)
 
 	return nil
 }

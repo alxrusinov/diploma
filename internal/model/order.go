@@ -9,6 +9,7 @@ type Order struct {
 	Number  string  `json:"order"`
 	Process Process `json:"status"`
 	Accrual float64 `json:"accrual"`
+	UserID  string  `json:"user_id,omitempty"`
 }
 
 func (order *Order) ValidateNumber() (bool, error) {

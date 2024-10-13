@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"context"
+
 	"github.com/alxrusinov/diploma/internal/client"
 	"github.com/alxrusinov/diploma/internal/model"
 )
@@ -24,6 +26,7 @@ type Store interface {
 	UpdateBalance(balance float64, userID string) error
 	SetWithdrawls(withdrawn *model.Withdrawn, userID string) error
 	GetWithdrawls(userID string) ([]model.Withdrawn, error)
+	UpdateOrder(ctx context.Context, userID string, orderCh <-chan *model.Order, cancel context.CancelFunc)
 }
 
 func NewUsecase(store Store, addr string) *Usecase {
