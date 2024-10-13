@@ -2,7 +2,6 @@ package handler
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/alxrusinov/diploma/internal/model"
 	"github.com/gin-gonic/gin"
@@ -36,30 +35,6 @@ func (handler *Handler) SetBalanceWithDraw(ctx *gin.Context) {
 		ctx.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
-
-	balance, err := handler.usecase.GetBalance(token.UserID)
-
-	if err != nil {
-		ctx.AbortWithStatus(http.StatusInternalServerError)
-		return
-	}
-
-	balanceInt := balance.Current
-
-	if !withdraw.IsWithdrawAvailable(balanceInt) {
-		ctx.AbortWithStatus(http.StatusPaymentRequired)
-		return
-	}
-
-	err = handler.usecase.UpdateBalance(balance.Current-withdraw.Sum, token.UserID)
-
-	if err != nil {
-		ctx.AbortWithStatus(http.StatusInternalServerError)
-		return
-	}
-
-	withdraw.ProcessedAt = time.Now().Format(time.RFC3339)
-	withdraw.Round()
 
 	err = handler.usecase.SetWithdrawls(withdraw, token.UserID)
 

@@ -1,13 +1,17 @@
 package server
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
+	"golang.org/x/net/context"
 )
 
 type Server struct {
 	mux        *gin.Engine
 	handler    Handler
 	runAddress string
+	server     *http.Server
 }
 
 type Handler interface {
@@ -21,8 +25,21 @@ type Handler interface {
 	CheckAuth() gin.HandlerFunc
 }
 
-func (server *Server) Run() {
-	server.mux.Run(server.runAddress)
+func (server *Server) Run() error {
+	if err := server.server.ListenAndServe(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (server *Server) Shutdown(ctx context.Context) error {
+	<-ctx.Done()
+	if err := server.server.Shutdown(ctx); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func NewServer(handler Handler, runAddress string) *Server {
@@ -51,6 +68,11 @@ func NewServer(handler Handler, runAddress string) *Server {
 	userAPI.POST("/balance/withdraw", server.handler.SetBalanceWithDraw)
 
 	userAPI.GET("/withdrawals", server.handler.GetWithdrawals)
+
+	server.server = &http.Server{
+		Addr:    server.runAddress,
+		Handler: server.mux,
+	}
 
 	return server
 }

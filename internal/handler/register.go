@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/alxrusinov/diploma/internal/model"
@@ -38,7 +37,6 @@ func (handler *Handler) Register(ctx *gin.Context) {
 	userID, err := handler.usecase.CreateUser(NewUser)
 
 	if err != nil {
-		fmt.Println("two")
 		ctx.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
@@ -48,7 +46,6 @@ func (handler *Handler) Register(ctx *gin.Context) {
 	token, err := handler.AuthClient.GetToken(NewUser)
 
 	if err != nil {
-		fmt.Println("three")
 		ctx.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
@@ -56,7 +53,6 @@ func (handler *Handler) Register(ctx *gin.Context) {
 	_, err = handler.usecase.UpdateUser(token)
 
 	if err != nil {
-		fmt.Println("four")
 		ctx.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}

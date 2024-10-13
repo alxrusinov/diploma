@@ -2,16 +2,8 @@ package config
 
 import (
 	"flag"
-	"log"
 	"os"
 	"path/filepath"
-
-	"github.com/alxrusinov/diploma/internal/authenticate"
-	"github.com/alxrusinov/diploma/internal/handler"
-	"github.com/alxrusinov/diploma/internal/migrator"
-	"github.com/alxrusinov/diploma/internal/server"
-	"github.com/alxrusinov/diploma/internal/store"
-	"github.com/alxrusinov/diploma/internal/usecase"
 )
 
 const (
@@ -56,23 +48,17 @@ func (config *Config) Init() {
 	}
 }
 
-func (config *Config) Run() {
-	migratorInst := migrator.NewMigrator()
-	store := store.NewStore(config.DatabaseURI, migratorInst)
-
-	authClient := authenticate.NewAuth()
-	uc := usecase.NewUsecase(store, config.AccrualSystemAddress)
-	router := handler.NewHandler(uc, config.AccrualSystemAddress, authClient)
-	server := server.NewServer(router, config.RunAddress)
-
-	err := store.RunMigration()
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	server.Run()
+func (config *Config) GetDatabaseURI() string {
+	return config.DatabaseURI
 }
+
+func (config *Config) GetAccrualSystemAddress() string {
+	return config.AccrualSystemAddress
+}
+
+func (config *Config) GetRunAddress() string { return config.RunAddress }
+
+func (config *Config) GetMigrationsDir() string { return config.MigrationsDir }
 
 func NewConfig() *Config {
 	path, _ := filepath.Abs(MigrationsDir)
