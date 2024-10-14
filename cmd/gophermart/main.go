@@ -25,7 +25,6 @@ func main() {
 	case err := <-errChan:
 		log.Fatal("server has been crashed", err)
 	case <-signalCtx.Done():
-		fmt.Print("graceful shutdown")
 		cancel()
 
 	}
