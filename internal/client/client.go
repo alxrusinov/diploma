@@ -21,7 +21,9 @@ func (client *Client) GetOrderInfo(ctx context.Context, orderNumber string, resC
 
 	addr := fmt.Sprintf("%s/api/orders/%s", client.addr, orderNumber)
 
-	tick := time.NewTicker(time.Second * 3)
+	tick := time.NewTicker(time.Second)
+
+	defer tick.Stop()
 
 	for {
 		select {
