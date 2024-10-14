@@ -3,7 +3,6 @@ package handler
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/alxrusinov/diploma/internal/model"
@@ -40,7 +39,6 @@ func (handler *Handler) GetOrders(ctx *gin.Context) {
 	}
 
 	if len(orders) == 0 {
-		fmt.Printf("%#v\n", orders)
 		ctx.JSON(http.StatusNoContent, orders)
 		return
 	}
