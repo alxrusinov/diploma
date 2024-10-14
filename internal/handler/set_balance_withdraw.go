@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 
+	"github.com/alxrusinov/diploma/internal/customerrors"
 	"github.com/alxrusinov/diploma/internal/model"
 	"github.com/gin-gonic/gin"
 )
@@ -39,6 +41,13 @@ func (handler *Handler) SetBalanceWithDraw(ctx *gin.Context) {
 	err = handler.usecase.SetWithdrawls(withdraw, token.UserID)
 
 	if err != nil {
+		noMoneyErr := new(customerrors.PaymentRequiredError)
+
+		if errors.As(err, &noMoneyErr) {
+			ctx.AbortWithStatus(http.StatusPaymentRequired)
+			return
+		}
+
 		ctx.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
