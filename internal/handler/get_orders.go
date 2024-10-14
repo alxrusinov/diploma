@@ -27,7 +27,7 @@ func (handler *Handler) GetOrders(ctx *gin.Context) {
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			ctx.Status(http.StatusNoContent)
+			ctx.JSON(http.StatusNoContent, orders)
 			return
 		}
 
@@ -36,7 +36,7 @@ func (handler *Handler) GetOrders(ctx *gin.Context) {
 	}
 
 	if len(orders) == 0 {
-		ctx.Status(http.StatusNoContent)
+		ctx.JSON(http.StatusNoContent, orders)
 		return
 	}
 
