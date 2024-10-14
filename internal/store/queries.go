@@ -17,7 +17,7 @@ const (
 	updateUserTokenQuery            = `UPDATE users SET token = $1 WHERE id = $2;`
 	checkOrderQuery                 = `SELECT user_id FROM orders WHERE number = $1;`
 	getOrderQuery                   = `SELECT number, process, accrual, uploaded_at FROM orders WHERE number = $1 and user_id = $2;`
-	updateOrderQuery                = `UPDATE orders SET process = $1 WHERE number = $2 and user_id = $3`
+	updateOrderQuery                = `UPDATE orders SET process = $1, accrual = $2 WHERE number = $3 and user_id = $4;`
 	setWithdrawnQuery               = `INSERT INTO withdrawls (user_id, order_number, sum, processed_at)
 	VALUES ($1, $2, $3, $4);`
 	getWithdrawlsQuery = `SELECT order_number, sum, processed_at FROM withdrawls WHERE user_id = $1 ORDER BY TO_TIMESTAMP(processed_at, 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"') DESC`

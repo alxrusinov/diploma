@@ -54,8 +54,6 @@ func (client *Client) GetOrderInfo(ctx context.Context, orderNumber string, resC
 
 			}
 
-			cancel()
-
 		}
 
 	}

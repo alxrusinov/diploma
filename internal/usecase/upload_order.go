@@ -14,20 +14,22 @@ func (usecase *Usecase) UploadOrder(order *model.Order, userID string) error {
 	orderUserID, err := usecase.store.CheckOrder(order)
 
 	if err != nil {
-		if !errors.As(err, &noOrderError) {
+		if errors.As(err, &noOrderError) {
 			order.Process = model.New
 			_, err = usecase.store.AddOrder(order, userID)
 
 			if err != nil {
 				return err
 			}
-		}
 
-		return err
+		} else {
+			return err
+
+		}
 
 	}
 
-	if orderUserID != "" {
+	if err == nil && orderUserID != "" {
 		if orderUserID == userID {
 			return &customerrors.DuplicateOwnerOrderError{}
 		}

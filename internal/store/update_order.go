@@ -15,7 +15,7 @@ func (store *Store) UpdateOrder(ctx context.Context, userID string, orderCh <-ch
 		if order.Process == model.Registered {
 			order.Process = model.New
 		}
-		_, err := store.db.Exec(updateOrderQuery, order.Process, order.Number, userID)
+		_, err := store.db.Exec(updateOrderQuery, order.Process, order.Accrual, order.Number, userID)
 
 		if err != nil || order.Process == model.Processed || order.Process == model.Invalid {
 			cancel()
