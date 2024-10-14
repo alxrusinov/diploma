@@ -2,7 +2,6 @@ package store
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/alxrusinov/diploma/internal/customerrors"
@@ -23,7 +22,6 @@ func (store *Store) SetWithdrawls(withdrawn *model.Withdrawn, userID string) err
 	err = tx.QueryRow(selectBalanceQuery, userID).Scan(&balance.Current)
 
 	if err != nil {
-		fmt.Printf("ONE - %#v\n", err)
 		tx.Rollback()
 		return err
 	}
