@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"database/sql"
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -24,6 +26,11 @@ func (handler *Handler) GetOrders(ctx *gin.Context) {
 	orders, err := handler.usecase.GetOrders(token.UserName)
 
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			ctx.Status(http.StatusNoContent)
+			return
+		}
+
 		ctx.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
