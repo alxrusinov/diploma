@@ -4,6 +4,7 @@ import (
 	"flag"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 const (
@@ -11,6 +12,7 @@ const (
 	DatabaseURI          = "DATABASE_URI"
 	AccrualSystemAddress = "ACCRUAL_SYSTEM_ADDRESS"
 	MigrationsDir        = "migrations"
+	ClientTimeout        = time.Second * 60
 )
 
 var Env = map[string]string{}
@@ -20,6 +22,7 @@ type Config struct {
 	DatabaseURI          string
 	AccrualSystemAddress string
 	MigrationsDir        string
+	ClientTimeout        time.Duration
 }
 
 func (config *Config) Init() {
@@ -65,5 +68,6 @@ func NewConfig() *Config {
 
 	return &Config{
 		MigrationsDir: path,
+		ClientTimeout: ClientTimeout,
 	}
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/alxrusinov/diploma/internal/authenticate"
+	"github.com/alxrusinov/diploma/internal/client"
 	"github.com/alxrusinov/diploma/internal/config"
 	"github.com/alxrusinov/diploma/internal/handler"
 	"github.com/alxrusinov/diploma/internal/migrator"
@@ -26,14 +27,18 @@ type Config interface {
 
 func (app *App) Run(ctx context.Context) chan error {
 	errChan := make(chan error)
-	app.Config = config.NewConfig()
 	app.Config.Init()
 
 	migratorInst := migrator.NewMigrator()
+
 	store := store.NewStore(app.Config.GetDatabaseURI(), migratorInst)
 
 	authClient := authenticate.NewAuth()
-	uc := usecase.NewUsecase(store, app.Config.GetAccrualSystemAddress())
+
+	serviceClient := client.NewClient(app.Config.GetAccrualSystemAddress(), config.ClientTimeout)
+
+	uc := usecase.NewUsecase(store, serviceClient)
+
 	router := handler.NewHandler(uc, app.Config.GetAccrualSystemAddress(), authClient)
 	server := server.NewServer(router, app.Config.GetRunAddress())
 

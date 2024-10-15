@@ -6,56 +6,64 @@ import (
 	"github.com/alxrusinov/diploma/internal/model"
 )
 
-func (store *Store) UpdateOrder(ctx context.Context, userID string, orderCh <-chan *model.Order, cancel context.CancelFunc) {
-	tx, err := store.db.Begin()
+func (store *Store) UpdateOrder(ctx context.Context, userID string, orderCh <-chan *model.Order) (<-chan struct{}, <-chan error) {
 
-	if err != nil {
-		cancel()
-		return
-	}
+	errCh := make(chan error)
+	doneCh := make(chan struct{})
 
-	select {
-	case <-ctx.Done():
-		tx.Rollback()
-		return
-	case order := <-orderCh:
-		if order.Process == model.Registered {
-			order.Process = model.New
-		}
-		_, err := tx.Exec(updateOrderQuery, order.Process, order.Accrual, order.Number, userID)
+	go func() {
+		tx, err := store.db.Begin()
 
 		if err != nil {
-			tx.Rollback()
-			cancel()
+			close(errCh)
 			return
 		}
 
-		var balance float64
-
-		err = tx.QueryRow(selectBalanceQuery, userID).Scan(&balance)
-
-		if err != nil {
+		select {
+		case <-ctx.Done():
 			tx.Rollback()
-			cancel()
 			return
-		}
+		case order := <-orderCh:
+			if order.Process == model.Registered {
+				order.Process = model.New
+			}
+			_, err := tx.Exec(updateOrderQuery, order.Process, order.Accrual, order.Number, userID)
 
-		_, err = tx.Exec(updateBalanceQuery, balance+order.Accrual, userID)
+			if err != nil {
+				tx.Rollback()
+				close(errCh)
+				return
+			}
 
-		if err != nil {
-			tx.Rollback()
-			cancel()
-			return
-		}
+			var balance float64
 
-		if order.Process == model.Processed || order.Process == model.Invalid {
+			err = tx.QueryRow(selectBalanceQuery, userID).Scan(&balance)
+
+			if err != nil {
+				tx.Rollback()
+				close(errCh)
+				return
+			}
+
+			_, err = tx.Exec(updateBalanceQuery, balance+order.Accrual, userID)
+
+			if err != nil {
+				tx.Rollback()
+				close(errCh)
+				return
+			}
+
+			if order.Process == model.Processed || order.Process == model.Invalid {
+				tx.Commit()
+				close(doneCh)
+				return
+			}
+
 			tx.Commit()
-			cancel()
-			return
+
 		}
+	}()
 
-		tx.Commit()
-
-	}
+	return doneCh, errCh
 
 }

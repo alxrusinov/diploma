@@ -26,9 +26,9 @@ type Store interface {
 	UpdateBalance(balance float64, userID string) error
 	SetWithdrawls(withdrawn *model.Withdrawn, userID string) error
 	GetWithdrawls(userID string) ([]model.Withdrawn, error)
-	UpdateOrder(ctx context.Context, userID string, orderCh <-chan *model.Order, cancel context.CancelFunc)
+	UpdateOrder(ctx context.Context, userID string, orderCh <-chan *model.Order) (<-chan struct{}, <-chan error)
 }
 
-func NewUsecase(store Store, addr string) *Usecase {
-	return &Usecase{store: store, client: client.NewClient(addr)}
+func NewUsecase(store Store, client *client.Client) *Usecase {
+	return &Usecase{store: store, client: client}
 }

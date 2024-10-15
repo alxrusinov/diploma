@@ -39,16 +39,23 @@ func (usecase *Usecase) UploadOrder(order *model.Order, userID string) error {
 
 	ctx, cancel := context.WithCancel(context.Background())
 
-	orderCh := make(chan *model.Order)
+	orderCh, clienErr := usecase.client.GetOrderInfo(ctx, order.Number)
 
-	go func(ctx context.Context, orderNumber string, resCh chan<- *model.Order, cancel context.CancelFunc) {
-		usecase.client.GetOrderInfo(ctx, orderNumber, orderCh, cancel)
+	done, errCh := usecase.store.UpdateOrder(ctx, userID, orderCh)
 
-	}(ctx, order.Number, orderCh, cancel)
-
-	go func(ctx context.Context, userID string, orderCh <-chan *model.Order, cancel context.CancelFunc) {
-		usecase.store.UpdateOrder(ctx, userID, orderCh, cancel)
-	}(ctx, userID, orderCh, cancel)
+	go func() {
+		select {
+		case <-done:
+			cancel()
+			return
+		case <-clienErr:
+			cancel()
+			return
+		case <-errCh:
+			cancel()
+			return
+		}
+	}()
 
 	return nil
 }

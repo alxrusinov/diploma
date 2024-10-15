@@ -17,55 +17,62 @@ type Client struct {
 	addr   string
 }
 
-func (client *Client) GetOrderInfo(ctx context.Context, orderNumber string, resCh chan<- *model.Order, cancel context.CancelFunc) {
+func (client *Client) GetOrderInfo(ctx context.Context, orderNumber string) (<-chan *model.Order, <-chan error) {
 
 	addr := fmt.Sprintf("%s/api/orders/%s", client.addr, orderNumber)
 
-	tick := time.NewTicker(time.Second)
+	orderCh := make(chan *model.Order)
+	errCh := make(chan error)
 
-	defer tick.Stop()
+	go func() {
+		tick := time.NewTicker(time.Second)
 
-	for {
-		select {
-		case <-ctx.Done():
-			return
-		case <-tick.C:
-			req, err := http.NewRequest(http.MethodGet, addr, nil)
+		defer tick.Stop()
 
-			if err != nil {
-				cancel()
-			}
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-tick.C:
+				req, err := http.NewRequest(http.MethodGet, addr, nil)
 
-			res, err := client.client.Do(req)
-
-			if err != nil {
-				cancel()
-			}
-
-			defer res.Body.Close()
-
-			if res.StatusCode == http.StatusOK {
-				order := new(model.Order)
-
-				if err := json.NewDecoder(res.Body).Decode(order); err != nil && !errors.Is(err, io.EOF) {
-					cancel()
+				if err != nil {
+					close(errCh)
 				}
 
-				resCh <- order
-				return
+				res, err := client.client.Do(req)
+
+				if err != nil {
+					close(errCh)
+				}
+
+				defer res.Body.Close()
+
+				if res.StatusCode == http.StatusOK {
+					order := new(model.Order)
+
+					if err := json.NewDecoder(res.Body).Decode(order); err != nil && !errors.Is(err, io.EOF) {
+						close(errCh)
+					}
+
+					orderCh <- order
+					return
+
+				}
 
 			}
 
 		}
+	}()
 
-	}
+	return orderCh, errCh
 
 }
 
-func NewClient(addr string) *Client {
+func NewClient(addr string, timeout time.Duration) *Client {
 	return &Client{
 		client: &http.Client{
-			Timeout: time.Second * 60,
+			Timeout: timeout,
 		},
 		addr: addr,
 	}
