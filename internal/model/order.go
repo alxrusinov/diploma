@@ -1,6 +1,8 @@
 package model
 
 import (
+	"errors"
+
 	luhn "github.com/EClaesson/go-luhn"
 	"github.com/alxrusinov/diploma/internal/mathfn"
 )
@@ -13,6 +15,10 @@ type Order struct {
 }
 
 func (order *Order) ValidateNumber() (bool, error) {
+	if len(order.Number) == 0 {
+		return false, errors.New("empty order number")
+	}
+
 	res, err := luhn.IsValid(order.Number)
 	return res, err
 }
