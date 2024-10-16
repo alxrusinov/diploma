@@ -43,6 +43,12 @@ func (client *Client) GetOrderInfo(ctx context.Context, orderNumber string) (<-c
 				res, err := client.client.Do(req)
 
 				if err != nil {
+
+					if res.StatusCode == http.StatusTooManyRequests {
+						time.Sleep(time.Second * 5)
+						continue
+					}
+
 					close(errCh)
 				}
 
