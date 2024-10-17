@@ -33,6 +33,12 @@ func NewStore(databaseURI string, migrator Migrator) *Store {
 	store.db.SetMaxIdleConns(5)
 	store.db.SetConnMaxLifetime(time.Minute)
 
+	err = store.db.Ping()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	return store
 
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/alxrusinov/diploma/internal/client"
 	"github.com/alxrusinov/diploma/internal/config"
 	"github.com/alxrusinov/diploma/internal/handler"
+	"github.com/alxrusinov/diploma/internal/logger"
 	"github.com/alxrusinov/diploma/internal/migrator"
 	"github.com/alxrusinov/diploma/internal/server"
 	"github.com/alxrusinov/diploma/internal/store"
@@ -29,6 +30,12 @@ func (app *App) Run(ctx context.Context) chan error {
 	errChan := make(chan error)
 	app.Config.Init()
 
+	err := logger.InitLogger()
+
+	if err != nil {
+		errChan <- err
+	}
+
 	migratorInst := migrator.NewMigrator()
 
 	store := store.NewStore(app.Config.GetDatabaseURI(), migratorInst)
@@ -42,7 +49,7 @@ func (app *App) Run(ctx context.Context) chan error {
 	router := handler.NewHandler(uc, app.Config.GetAccrualSystemAddress(), authClient)
 	server := server.NewServer(router, app.Config.GetRunAddress())
 
-	err := store.RunMigration()
+	err = store.RunMigration()
 
 	if err != nil {
 		errChan <- err

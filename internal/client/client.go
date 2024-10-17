@@ -9,7 +9,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/alxrusinov/diploma/internal/logger"
 	"github.com/alxrusinov/diploma/internal/model"
+	"go.uber.org/zap"
 )
 
 type Client struct {
@@ -37,6 +39,7 @@ func (client *Client) GetOrderInfo(ctx context.Context, orderNumber string) (<-c
 				req, err := http.NewRequest(http.MethodGet, addr, nil)
 
 				if err != nil {
+					logger.Logger.Error("client: create request error", zap.Error(err))
 					close(errCh)
 				}
 
@@ -45,10 +48,12 @@ func (client *Client) GetOrderInfo(ctx context.Context, orderNumber string) (<-c
 				if err != nil {
 
 					if res.StatusCode == http.StatusTooManyRequests {
+						logger.Logger.Error("client: too many requests", zap.Error(err))
 						time.Sleep(time.Second * 5)
 						continue
 					}
 
+					logger.Logger.Error("client: another error", zap.Error(err), zap.Any("response", res))
 					close(errCh)
 				}
 
@@ -58,10 +63,12 @@ func (client *Client) GetOrderInfo(ctx context.Context, orderNumber string) (<-c
 					order := new(model.Order)
 
 					if err := json.NewDecoder(res.Body).Decode(order); err != nil && !errors.Is(err, io.EOF) {
+						logger.Logger.Error("client: unmarshaling error", zap.Error(err), zap.Any("response", res))
 						close(errCh)
 						return
 					}
 
+					logger.Logger.Info("client: success get order", zap.Any("response", res), zap.Any("order", order))
 					orderCh <- order
 					return
 
