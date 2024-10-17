@@ -40,7 +40,7 @@ func (store *Store) SetWithdrawls(withdrawn *model.Withdrawn, userID string) err
 		return err
 	}
 
-	withdrawn.ProcessedAt = time.Now().Format(time.RFC3339)
+	withdrawn.ProcessedAt = time.Now().Format(time.RFC1123Z)
 
 	_, err = tx.Exec(setWithdrawnQuery, userID, withdrawn.Order, withdrawn.Sum, withdrawn.ProcessedAt)
 

@@ -1,7 +1,6 @@
 package store
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/alxrusinov/diploma/internal/mathfn"
@@ -17,9 +16,7 @@ func (store *Store) AddOrder(order *model.Order, userID string) (bool, error) {
 
 	order.Round()
 
-	row, err := tx.Query(insertOrderQuery, userID, order.Number, order.Process, order.Accrual, time.Now().Format(time.RFC3339))
-
-	fmt.Printf("TIME - %#v\n", time.Now().Format(time.RFC3339))
+	row, err := tx.Query(insertOrderQuery, userID, order.Number, order.Process, order.Accrual, time.Now().Format(time.RFC1123Z))
 
 	if err != nil || row.Err() != nil {
 		tx.Rollback()
