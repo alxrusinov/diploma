@@ -59,6 +59,7 @@ func (client *Client) GetOrderInfo(ctx context.Context, orderNumber string) (<-c
 
 					if err := json.NewDecoder(res.Body).Decode(order); err != nil && !errors.Is(err, io.EOF) {
 						close(errCh)
+						return
 					}
 
 					orderCh <- order
