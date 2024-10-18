@@ -9,10 +9,12 @@ import (
 	"github.com/alxrusinov/diploma/internal/handler"
 	"github.com/alxrusinov/diploma/internal/logger"
 	"github.com/alxrusinov/diploma/internal/migrator"
+	"github.com/alxrusinov/diploma/internal/model"
 	"github.com/alxrusinov/diploma/internal/orderclient"
 	"github.com/alxrusinov/diploma/internal/server"
 	"github.com/alxrusinov/diploma/internal/store"
 	"github.com/alxrusinov/diploma/internal/usecase"
+	"go.uber.org/zap"
 )
 
 type App struct {
@@ -71,14 +73,22 @@ func (app *App) Run(ctx context.Context) chan error {
 		}
 	}(ctx, errChan)
 
-	go func() {
+	go func(ctx context.Context) {
 		orderChan := updateOrderClient.GetProcessingOrder(ctx)
 
 		orderInfoChan := serviceClient.GetOrderInfo(ctx, orderChan)
 
 		updateOrderClient.UpdateOrder(ctx, orderInfoChan)
 
-	}()
+	}(ctx)
+
+	ord := &model.Order{
+		Number: string([]byte(`12345678902`)),
+	}
+
+	re, er := ord.ValidateNumber()
+
+	logger.Logger.Error("ORDER", zap.Bool("RESULT", re), zap.Error(er))
 
 	return errChan
 }

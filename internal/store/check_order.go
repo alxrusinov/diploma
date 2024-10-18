@@ -15,7 +15,9 @@ func (store *Store) CheckOrder(order *model.Order) (string, error) {
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return "", new(customerrors.NoOrderError)
+			return "", &customerrors.NoOrderError{
+				Err: errors.New("no order found"),
+			}
 		}
 
 		return "", err

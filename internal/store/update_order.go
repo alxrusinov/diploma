@@ -45,7 +45,9 @@ func (store *Store) UpdateOrder(ctx context.Context, order *model.Order) error {
 			return err
 		}
 
-		tx.Commit()
+		if err := tx.Commit(); err != nil {
+			return err
+		}
 
 		return nil
 

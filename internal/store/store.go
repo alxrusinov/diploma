@@ -29,9 +29,9 @@ func NewStore(databaseURI string, migrator Migrator) *Store {
 	store.db = db
 	store.migrator = migrator
 
-	store.db.SetMaxOpenConns(5)
-	store.db.SetMaxIdleConns(5)
-	store.db.SetConnMaxLifetime(time.Minute)
+	store.db.SetMaxOpenConns(15)
+	store.db.SetMaxIdleConns(15)
+	store.db.SetConnMaxLifetime(time.Second * 30)
 
 	err = store.db.Ping()
 

@@ -32,15 +32,9 @@ func (middleware Middleware) CheckAuth(authClient Auth) gin.HandlerFunc {
 			Login: token.UserName,
 		})
 
-		if !isUserExist {
+		if !isUserExist || err != nil {
 			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
-		}
-
-		if err != nil {
-			ctx.AbortWithStatus(http.StatusInternalServerError)
-			return
-
 		}
 
 		if token.IsExpired() {

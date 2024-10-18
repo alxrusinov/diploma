@@ -12,8 +12,6 @@ import (
 func (usecase *Usecase) UploadOrder(order *model.Order, userID string) error {
 	noOrderError := new(customerrors.NoOrderError)
 
-	logger.Logger.Info("start order uploading", zap.String("order number", order.Number))
-
 	orderUserID, err := usecase.store.CheckOrder(order)
 
 	if err != nil {
@@ -23,12 +21,12 @@ func (usecase *Usecase) UploadOrder(order *model.Order, userID string) error {
 			logger.Logger.Info("order added", zap.String("order number", order.Number))
 
 			if err != nil {
-				logger.Logger.Error("error add order", zap.Error(err), zap.String("order number", order.Number))
+				logger.Logger.Fatal("error add order", zap.Error(err), zap.String("order number", order.Number))
 				return err
 			}
 
 		} else {
-			logger.Logger.Error("error check order", zap.Error(err), zap.String("order number", order.Number))
+			logger.Logger.Fatal("error check order", zap.Error(err), zap.String("order number", order.Number))
 			return err
 
 		}

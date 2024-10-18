@@ -3,10 +3,8 @@ package store
 import (
 	"time"
 
-	"github.com/alxrusinov/diploma/internal/logger"
 	"github.com/alxrusinov/diploma/internal/mathfn"
 	"github.com/alxrusinov/diploma/internal/model"
-	"go.uber.org/zap"
 )
 
 func (store *Store) AddOrder(order *model.Order, userID string) (bool, error) {
@@ -19,8 +17,6 @@ func (store *Store) AddOrder(order *model.Order, userID string) (bool, error) {
 	order.Round()
 
 	row, err := tx.Query(insertOrderQuery, userID, order.Number, order.Process, order.Accrual, time.Now().Format(time.RFC3339))
-
-	logger.Logger.Info("time format", zap.String("time", time.Now().Format(time.RFC3339)))
 
 	if err != nil || row.Err() != nil {
 		tx.Rollback()
@@ -43,7 +39,9 @@ func (store *Store) AddOrder(order *model.Order, userID string) (bool, error) {
 		return false, err
 	}
 
-	tx.Commit()
+	if err = tx.Commit(); err != nil {
+		return false, err
+	}
 
 	return true, nil
 }

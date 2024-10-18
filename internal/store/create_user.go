@@ -27,7 +27,9 @@ func (store *Store) CreateUser(user *model.User) (string, error) {
 		return "", err
 	}
 
-	tx.Commit()
+	if err = tx.Commit(); err != nil {
+		return "", err
+	}
 
 	return userID, nil
 }
