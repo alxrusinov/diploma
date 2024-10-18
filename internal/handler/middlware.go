@@ -3,10 +3,12 @@ package handler
 import (
 	"net/http"
 
+	"github.com/alxrusinov/diploma/internal/model"
 	"github.com/gin-gonic/gin"
 )
 
 type Middleware struct {
+	usecase Usecase
 }
 
 func (middleware Middleware) CheckAuth(authClient Auth) gin.HandlerFunc {
@@ -23,6 +25,22 @@ func (middleware Middleware) CheckAuth(authClient Auth) gin.HandlerFunc {
 		if err != nil {
 			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
+		}
+
+		isUserExist, err := middleware.usecase.CheckUserExists(&model.User{
+			ID:    token.UserID,
+			Login: token.UserName,
+		})
+
+		if !isUserExist {
+			ctx.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		if err != nil {
+			ctx.AbortWithStatus(http.StatusInternalServerError)
+			return
+
 		}
 
 		if token.IsExpired() {

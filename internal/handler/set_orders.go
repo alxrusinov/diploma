@@ -13,10 +13,34 @@ import (
 )
 
 func (handler *Handler) SetOrders(ctx *gin.Context) {
-	body, err := io.ReadAll(ctx.Request.Body)
+	tokenString, err := ctx.Cookie(TokenCookie)
+
+	logger.Logger.Debug("DEBUG")
 
 	if err != nil {
-		logger.Logger.Error("bad request of stting order", zap.Error(err))
+		logger.Logger.Fatal("invalid cookie", zap.Error(err))
+		ctx.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	token, err := handler.AuthClient.ParseToken(tokenString)
+
+	if err != nil {
+		logger.Logger.Fatal("invalid token", zap.Error(err))
+		ctx.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	body, err := io.ReadAll(ctx.Request.Body)
+
+	if string(body) == string([]byte(`12345678902`)) {
+		logger.Logger.Debug("CHECK", zap.Any("parsed", string(body)))
+		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	if err != nil {
+		logger.Logger.Fatal("bad request of stting order", zap.Error(err))
 		ctx.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
@@ -29,25 +53,15 @@ func (handler *Handler) SetOrders(ctx *gin.Context) {
 
 	isValid, err := order.ValidateNumber()
 
-	if err != nil || !isValid {
-		logger.Logger.Error("invalid order number", zap.Error(err))
+	if err != nil {
+		logger.Logger.Fatal("error order number", zap.Error(err))
 		ctx.AbortWithStatus(http.StatusUnprocessableEntity)
 		return
 	}
 
-	tokenString, err := ctx.Cookie(TokenCookie)
-
-	if err != nil {
-		logger.Logger.Error("invalid cookie", zap.Error(err))
-		ctx.AbortWithStatus(http.StatusInternalServerError)
-		return
-	}
-
-	token, err := handler.AuthClient.ParseToken(tokenString)
-
-	if err != nil {
-		logger.Logger.Error("invalid token", zap.Error(err))
-		ctx.AbortWithStatus(http.StatusInternalServerError)
+	if !isValid {
+		logger.Logger.Fatal("invalid order number", zap.Error(err))
+		ctx.AbortWithStatus(http.StatusUnprocessableEntity)
 		return
 	}
 
@@ -58,24 +72,25 @@ func (handler *Handler) SetOrders(ctx *gin.Context) {
 		DuplicateUserOrderError := new(customerrors.DuplicateUserOrderError)
 
 		if errors.As(err, &duplicateOwnerError) {
-			logger.Logger.Error("user has alredy uploaded order", zap.Error(err), zap.String("UserID", order.UserID), zap.String("order number", order.Number))
+			logger.Logger.Fatal("user has alredy uploaded order", zap.Error(err), zap.String("UserID", order.UserID), zap.String("order number", order.Number))
 			ctx.Status(http.StatusOK)
 			return
 		}
 
 		if errors.As(err, &DuplicateUserOrderError) {
-			logger.Logger.Error("another user has alredy uploaded order", zap.Error(err), zap.String("order number", order.Number))
+			logger.Logger.Fatal("another user has alredy uploaded order", zap.Error(err), zap.String("order number", order.Number))
 			ctx.AbortWithStatus(http.StatusConflict)
 			return
 		}
 
-		logger.Logger.Error("another uploading order error", zap.Error(err), zap.String("order number", order.Number))
+		logger.Logger.Fatal("another uploading order error", zap.Error(err), zap.String("order number", order.Number))
 		ctx.AbortWithStatus(http.StatusInternalServerError)
 		return
 
 	}
 
 	logger.Logger.Info("order is processing", zap.String("order number", order.Number))
+
 	ctx.Status(http.StatusAccepted)
 
 }

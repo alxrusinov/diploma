@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"context"
 	"errors"
 
 	"github.com/alxrusinov/diploma/internal/customerrors"
@@ -14,6 +13,7 @@ func (usecase *Usecase) UploadOrder(order *model.Order, userID string) error {
 	noOrderError := new(customerrors.NoOrderError)
 
 	logger.Logger.Info("start order uploading", zap.String("order number", order.Number))
+
 	orderUserID, err := usecase.store.CheckOrder(order)
 
 	if err != nil {
@@ -42,26 +42,6 @@ func (usecase *Usecase) UploadOrder(order *model.Order, userID string) error {
 
 		return &customerrors.DuplicateUserOrderError{Err: errors.New("another user has already added order")}
 	}
-
-	ctx, cancel := context.WithCancel(context.Background())
-
-	orderCh, clienErr := usecase.client.GetOrderInfo(ctx, order.Number)
-
-	done, errCh := usecase.store.UpdateOrder(ctx, userID, orderCh)
-
-	go func() {
-		select {
-		case <-done:
-			cancel()
-			return
-		case <-clienErr:
-			cancel()
-			return
-		case <-errCh:
-			cancel()
-			return
-		}
-	}()
 
 	return nil
 }

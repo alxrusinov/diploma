@@ -19,28 +19,25 @@ type Client struct {
 	addr   string
 }
 
-func (client *Client) GetOrderInfo(ctx context.Context, orderNumber string) (<-chan *model.Order, <-chan error) {
-
-	addr := fmt.Sprintf("%s/api/orders/%s", client.addr, orderNumber)
+func (client *Client) GetOrderInfo(ctx context.Context, inChan <-chan *model.Order) <-chan *model.Order {
 
 	orderCh := make(chan *model.Order)
-	errCh := make(chan error)
 
 	go func() {
-		tick := time.NewTicker(time.Second)
+		select {
+		case <-ctx.Done():
+			return
+		default:
+			for order := range inChan {
+				addr := fmt.Sprintf("%s/api/orders/%s", client.addr, order.Number)
 
-		defer tick.Stop()
+				logger.Logger.Info("get order", zap.Any("order", order))
 
-		for {
-			select {
-			case <-ctx.Done():
-				return
-			case <-tick.C:
 				req, err := http.NewRequest(http.MethodGet, addr, nil)
 
 				if err != nil {
 					logger.Logger.Error("client: create request error", zap.Error(err))
-					close(errCh)
+					continue
 				}
 
 				res, err := client.client.Do(req)
@@ -54,32 +51,33 @@ func (client *Client) GetOrderInfo(ctx context.Context, orderNumber string) (<-c
 					}
 
 					logger.Logger.Error("client: another error", zap.Error(err), zap.Any("response", res))
-					close(errCh)
+					continue
 				}
 
-				defer res.Body.Close()
-
 				if res.StatusCode == http.StatusOK {
-					order := new(model.Order)
+					resOrder := new(model.Order)
 
-					if err := json.NewDecoder(res.Body).Decode(order); err != nil && !errors.Is(err, io.EOF) {
+					if err := json.NewDecoder(res.Body).Decode(resOrder); err != nil && !errors.Is(err, io.EOF) {
 						logger.Logger.Error("client: unmarshaling error", zap.Error(err), zap.Any("response", res))
-						close(errCh)
-						return
+						res.Body.Close()
+						continue
 					}
+					res.Body.Close()
 
-					logger.Logger.Info("client: success get order", zap.Any("response", res), zap.Any("order", order))
-					orderCh <- order
-					return
+					logger.Logger.Info("client: success get order", zap.Any("response", res), zap.Any("RESORDER", resOrder))
+
+					resOrder.UserID = order.UserID
+					orderCh <- resOrder
+					continue
 
 				}
 
 			}
-
 		}
+
 	}()
 
-	return orderCh, errCh
+	return orderCh
 
 }
 

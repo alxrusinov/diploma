@@ -9,6 +9,7 @@ import (
 	"github.com/alxrusinov/diploma/internal/handler"
 	"github.com/alxrusinov/diploma/internal/logger"
 	"github.com/alxrusinov/diploma/internal/migrator"
+	"github.com/alxrusinov/diploma/internal/orderclient"
 	"github.com/alxrusinov/diploma/internal/server"
 	"github.com/alxrusinov/diploma/internal/store"
 	"github.com/alxrusinov/diploma/internal/usecase"
@@ -44,6 +45,8 @@ func (app *App) Run(ctx context.Context) chan error {
 
 	serviceClient := client.NewClient(app.Config.GetAccrualSystemAddress(), config.ClientTimeout)
 
+	updateOrderClient := orderclient.NewOrderClient(store)
+
 	uc := usecase.NewUsecase(store, serviceClient)
 
 	router := handler.NewHandler(uc, app.Config.GetAccrualSystemAddress(), authClient)
@@ -63,10 +66,19 @@ func (app *App) Run(ctx context.Context) chan error {
 
 	go func(ctx context.Context, errChan chan error) {
 		<-ctx.Done()
-		if err = server.Shutdown(context.Background()); err != nil {
+		if err = server.Shutdown(ctx); err != nil {
 			errChan <- err
 		}
 	}(ctx, errChan)
+
+	go func() {
+		orderChan := updateOrderClient.GetProcessingOrder(ctx)
+
+		orderInfoChan := serviceClient.GetOrderInfo(ctx, orderChan)
+
+		updateOrderClient.UpdateOrder(ctx, orderInfoChan)
+
+	}()
 
 	return errChan
 }

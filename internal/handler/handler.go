@@ -36,7 +36,7 @@ const (
 func NewHandler(usecaseInst Usecase, responseAddr string, authClient Auth) *Handler {
 	handler := &Handler{
 		usecase:    usecaseInst,
-		Middleware: Middleware{},
+		Middleware: Middleware{usecase: usecaseInst},
 		AuthClient: authClient,
 	}
 
