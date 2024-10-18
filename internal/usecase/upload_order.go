@@ -21,12 +21,10 @@ func (usecase *Usecase) UploadOrder(order *model.Order, userID string) error {
 			logger.Logger.Info("order added", zap.String("order number", order.Number))
 
 			if err != nil {
-				logger.Logger.Fatal("error add order", zap.Error(err), zap.String("order number", order.Number))
 				return err
 			}
 
 		} else {
-			logger.Logger.Fatal("error check order", zap.Error(err), zap.String("order number", order.Number))
 			return err
 
 		}
