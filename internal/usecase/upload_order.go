@@ -37,10 +37,10 @@ func (usecase *Usecase) UploadOrder(order *model.Order, userID string) error {
 
 	if err == nil && orderUserID != "" {
 		if orderUserID == userID {
-			return &customerrors.DuplicateOwnerOrderError{}
+			return &customerrors.DuplicateOwnerOrderError{Err: errors.New("current user has already added order")}
 		}
 
-		return &customerrors.DuplicateUserOrderError{}
+		return &customerrors.DuplicateUserOrderError{Err: errors.New("another user has already added order")}
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
